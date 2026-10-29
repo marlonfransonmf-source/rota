@@ -1,5 +1,5 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Rota Checklist</title>
+<title>Rota Paletes</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#1F4D3A">
 <link rel="manifest" href="manifest.webmanifest">
@@ -12,7 +12,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1512;--card:#18211C;--fg:#E8EEE9;--mut:#93A198;--line:#2A362F;--brand:#7FC8A0;--brand-fg:#0F1512;--sun:#F2C14E;--ok:#5CC98A;--bad:#F07A62;--na:#7B877F;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0F1512;--card:#18211C;--fg:#E8EEE9;--mut:#93A198;--line:#2A362F;--brand:#7FC8A0;--brand-fg:#0F1512;--sun:#F2C14E;--ok:#5CC98A;--bad:#F07A62;--na:#7B877F;color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
 main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 header{padding-block:20px 4px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
 h1{font:800 28px/1.05 var(--fd);margin:0;letter-spacing:-.02em}
@@ -55,12 +55,7 @@ input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1
 </style>
 
 <main id="app"></main>
-<nav class="tabs" aria-label="Seções">
-  <button id="t-run" data-t="run"><b>✓</b>Executar</button>
-  <button id="t-tpl" data-t="tpl"><b>＋</b>Modelos</button>
-  <button id="t-rep" data-t="rep"><b>≡</b>Relatórios</button>
-  <button id="t-pal" data-t="pal"><b>▦</b>Paletes</button>
-</nav>
+
 
 <script>
 const K="rota.v1";const $=s=>document.querySelector(s);
@@ -85,7 +80,7 @@ const SEED={templates:[
 let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S)S=structuredClone(SEED);if(!S.pool)S.pool=structuredClone(SEED.pool);if(!S.pool.coletas)S.pool.coletas=structuredClone(SEED.pool.coletas);
 let sampleP=null;setTimeout(()=>{try{sampleP=window.claude?.use?window.claude.use("sample"):Promise.resolve(null)}catch(e){sampleP=Promise.resolve(null)}},0);let iaOut=null,iaBusy=false;
 const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
-let tab="run",cur=null,edit=null;
+let tab="pal",cur=null,edit=null;
 
 function score(x){const t=S.templates.find(t=>t.id===x.tpl);const sn=(t?t.itens:[]).filter(i=>i.tipo==="sn");
  const v=sn.map(i=>x.resp[i.id]?.v).filter(v=>v==="c"||v==="nc");return v.length?Math.round(100*v.filter(x=>x==="c").length/v.length):null}
@@ -99,7 +94,7 @@ function render(){
  const a=$("#app");
  if(cur)return runView(a);
  if(edit)return editView(a);
- const head=`<header><div><div class="eb">Checklists de operação</div><h1>Rota</h1></div><button id="reset" title="Volta aos dados de exemplo">Exemplos</button></header>`;
+ const head=`<header><div><div class="eb">Gestão de pool de paletes</div><h1>Rota Paletes</h1></div><button id="reset" title="Volta aos dados de exemplo">Exemplos</button></header>`;
  if(tab==="run"){
   a.innerHTML=head+`<div class="eb">Escolha um checklist para começar</div>`+S.templates.map(t=>`<div class="card tpl"><div style="min-width:0"><h2>${esc(t.nome)}</h2><div class="meta">${t.itens.length} itens ${t.ex?'<span class="ex">EXEMPLO</span>':""}</div></div><button class="pri" data-run="${t.id}">Iniciar</button></div>`).join("");
   a.querySelectorAll("[data-run]").forEach(b=>b.onclick=()=>{const t=S.templates.find(x=>x.id===b.dataset.run);cur={id:uid(),tpl:t.id,nome:t.nome,autor:"Você",ts:Date.now(),resp:{},acoes:[]};render()});
@@ -139,7 +134,7 @@ function palView(a,head){
  const R=S.pool.movs.filter(m=>m.insp),it=R.reduce((a,m)=>({b:a.b+m.insp.bom,r:a.r+m.insp.rep,s:a.s+m.insp.suc}),{b:0,r:0,s:0}),tt=it.b+it.r+it.s;
  const insp={tot:tt,pb:tt?Math.round(100*it.b/tt):0,pr:tt?Math.round(100*it.r/tt):0,ps:tt?Math.round(100*it.s/tt):0};
  const opt=L.map(l=>`<option value="${l.id}">${esc(l.nome)}</option>`).join("");
- a.innerHTML=head+`<div class="eb">Pool de paletes · saldo contábil × contagem física</div>
+ a.innerHTML=head+`<div class="eb">Saldo contábil × contagem física</div>
  <div class="kpis"><div class="card kpi"><span class="eb">No pool</span><b class="num">${tot}</b><span class="meta">${fora} fora do CD</span></div><div class="card kpi"><span class="eb">Divergência</span><b class="${divTot<0?"bad":"ok"}">${divTot>0?"+":""}${divTot}</b><span class="meta">físico − contábil</span></div><div class="card kpi"><span class="eb">Contagens vencidas</span><b class="${venc?"bad":"ok"}">${venc}</b><span class="meta">de ${L.length} locais</span></div></div>
  <div class="card ia"><div class="row"><h2 class="sp">Análise da IA</h2><button class="pri" id="ia-go">${iaBusy?"Analisando…":"Analisar pool"}</button></div><div id="ia-box">${iaOut||`<p class="meta">A IA lê saldos, divergências, perdas e idade das contagens e devolve onde contar primeiro, onde cobrar devolução e o risco de perda.</p>`}</div></div>
  <div class="card"><div class="row"><h2 class="sp">Fila de inventário</h2><span class="meta">ordem de prioridade</span></div>${L.map(l=>`<div class="loc"><div style="min-width:0"><b>${esc(l.nome)}</b><div class="meta">${l.tipo} · saldo <span class="num">${l.saldo}</span>${l.perdas?` · ${l.perdas} perdidos`:""}</div><div class="meta">${l.ult?`Contado há ${l.dias}d (ciclo ${l.ciclo}d)${l.div!=null?` · diferença <span class="num">${l.div>0?"+":""}${l.div}</span> (${l.divPct}%)`:""}`:"Nunca contado"}</div></div><div style="text-align:right"><span class="pill ${l.vencida||Math.abs(l.divPct||0)>3?"bad":"ok"}">${l.vencida?"Contar":"Em dia"}</span></div></div>`).join("")}</div>
