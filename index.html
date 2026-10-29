@@ -12,7 +12,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1512;--card:#18211C;--fg:#E8EEE9;--mut:#93A198;--line:#2A362F;--brand:#7FC8A0;--brand-fg:#0F1512;--sun:#F2C14E;--ok:#5CC98A;--bad:#F07A62;--na:#7B877F;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0F1512;--card:#18211C;--fg:#E8EEE9;--mut:#93A198;--line:#2A362F;--brand:#7FC8A0;--brand-fg:#0F1512;--sun:#F2C14E;--ok:#5CC98A;--bad:#F07A62;--na:#7B877F;color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 104px}
 main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 header{padding-block:20px 4px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
 h1{font:800 28px/1.05 var(--fd);margin:0;letter-spacing:-.02em}
@@ -52,16 +52,72 @@ input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1
 .ed{display:grid;grid-template-columns:1fr 120px 40px;gap:8px}
 @media (max-width:420px){.kpis{grid-template-columns:1fr 1fr 1fr}.kpi b{font-size:21px}}
 @media (prefers-reduced-motion:no-preference){.card{animation:in .25s ease both}@keyframes in{from{transform:translateY(4px)}}}
+
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:420px){.f2{grid-template-columns:1fr}}
+details summary{cursor:pointer;color:var(--mut);font-size:13px}.como{font-size:13px;background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:6px}
+.fbtn{font:600 13px var(--fb);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--fg);background:var(--card)}
+.al{border-color:var(--bad)}.na{color:var(--na)}
+.tb{width:100%;border-collapse:collapse;font-size:13px}.tb th,.tb td{text-align:left;padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+.tb th{font:500 11px var(--fm);text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.rf{width:220px;max-width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px}
+@media print{
+ :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff;--card:#fff;--fg:#111;--mut:#555;--line:#ccc;--brand:#1F4D3A;--ok:#2E7D4F;--bad:#B23A24;--na:#777;color-scheme:light}
+ .tabs,.np{display:none!important}body{padding:0;background:#fff}main{max-width:none;gap:10px}
+ .card{break-inside:avoid;animation:none!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 </style>
 
 <main id="app"></main>
+<nav class="tabs"><button data-t="pal"><b>&#9707;</b>Paletes</button><button data-t="run"><b>&#10003;</b>Visitas</button><button data-t="tpl"><b>&#8801;</b>Modelos</button><button data-t="rep"><b>%</b>Relatórios</button></nav>
 
 
 <script>
 const K="rota.v1";const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const uid=()=>Math.random().toString(36).slice(2,9);
-const SEED={templates:[
+
+const ROTEIRO=[
+ ["Segurança e EPI",[
+  ["EPI completo na operação","Observe 10 pessoas no pátio: luva, bota com biqueira e óculos no corte e na pregação. Uma pessoa sem EPI já é não conformidade."],
+  ["Circulação de empilhadeira sinalizada","Faixa de pedestre pintada, espelho nas esquinas e velocidade controlada. Fique 5 minutos num cruzamento."],
+  ["Pilhas dentro da altura máxima","Pilha de palete vazio no limite definido pelo centro (referência comum: 2,5 m ou 15 a 18 unidades), prumada e sem palete quebrado na base."],
+  ["Extintores e rotas de fuga livres","Extintor no lugar, com lacre e validade em dia, e nenhuma pilha bloqueando porta ou rota."]]],
+ ["Recebimento e triagem",[
+  ["Retorno conferido contra a ordem de coleta","Pegue a última coleta recebida e compare quantidade física, nota e sistema. Diferença sem registro é não conformidade."],
+  ["Triagem feita no dia","Não pode haver palete de retorno parado sem classificação há mais de 24h. Pergunte a data da carga mais antiga no pátio."],
+  ["Paletes de terceiros segregados","Palete que não é do pool, de outra cor ou outro dono, fica em área separada e identificada para devolução."],
+  ["Avarias registradas com foto","Carga que chega muito danificada tem foto e registro para cobrança do cliente."]]],
+ ["Inspeção e classificação",[
+  ["Critério de inspeção visível no posto","O padrão (bom, reparo, sucata) com fotos de exemplo fica afixado onde o inspetor trabalha."],
+  ["Amostra de 10 paletes classificados certo","Pegue 10 paletes da pilha de bons e confira: tábua rachada, prego saliente, bloco solto ou contaminação reprovam."],
+  ["Palete contaminado isolado","Óleo, química ou mofo vai para área de quarentena com descarte ou limpeza registrados."],
+  ["Taxa de reparo acompanhada","O centro sabe dizer o percentual de bons, reparo e sucata da última semana."]]],
+ ["Reparo e tratamento térmico",[
+  ["Reparo dentro do padrão do pool","Peça de reposição na mesma medida e espessura, pregação no padrão e marca da cor do pool refeita."],
+  ["Tratamento térmico com registro","Cada lote HT tem registro de tempo e temperatura conforme ISPM-15 e marcação IPPC legível no palete."],
+  ["Madeira de reposição rastreável","Lote de madeira com origem identificada (fornecedor homologado, reflorestamento)."],
+  ["Fila de reparo sob controle","Paletes aguardando reparo em quantidade compatível com a capacidade de 1 a 2 dias."]]],
+ ["Estoque e inventário",[
+  ["Contagem física bate com o sistema","Conte uma área e compare com o saldo do sistema. Aceitável até 1% de diferença no próprio centro."],
+  ["Inventário cíclico em dia","Veja a data da última contagem completa e do último cíclico. Calendário atrasado é não conformidade."],
+  ["Estoque separado por status","Bons, reparo, sucata e terceiros em áreas demarcadas e identificadas."],
+  ["Cobertura de estoque para abastecimento","Paletes bons disponíveis cobrem a demanda prevista dos próximos dias de entrega."]]],
+ ["Expedição e abastecimento",[
+  ["Pedido de abastecimento conferido na carga","Quantidade carregada igual à ordem, com conferência registrada antes de o caminhão sair."],
+  ["Veículo vistoriado","Baú limpo, seco e sem pregos expostos antes de carregar."],
+  ["Documentos emitidos corretamente","Nota e ordem com cliente, quantidade e tipo de palete batendo."],
+  ["Coletas da semana no prazo","Compare as coletas agendadas com as realizadas. Coleta atrasada sem justificativa é não conformidade."]]],
+ ["Organização e 5S",[
+  ["Pátio limpo e sem sucata espalhada","Sem pedaço de madeira, prego ou cinta no chão das áreas de circulação."],
+  ["Ferramentas no lugar","Pregadeiras, serras e compressor guardados e com manutenção identificada."],
+  ["Gestão à vista atualizada","Quadro com indicadores da semana e plano de ação da última visita."]]],
+ ["Gestão e indicadores",[
+  ["Plano de ação da visita anterior concluído","Abra as ações da última visita e verifique cada uma no local."],
+  ["Indicadores do mês apresentados","Giro do pool, perdas, tempo de triagem, taxa de reparo e coletas no prazo."],
+  ["Equipe treinada no padrão","Pergunte a 2 pessoas qual o critério de reprovação de um palete. As respostas têm de bater com o padrão."]]]];
+const TV={id:"tv",nome:"Visita a centro de serviço",visita:1,itens:ROTEIRO.flatMap(([sec,it],k)=>it.map(([txt,como],j)=>({id:"v"+k+"-"+j,txt,tipo:"sn",sec,como})))};
+const MAN_INTRO="Para cada item: o que olhar e quando marcar não conforme. Uma visita completa leva de 2 a 3 horas. Comece pela segurança, siga o fluxo do palete (recebimento, inspeção, reparo, estoque, expedição) e feche com a gestão do centro.";
+const SEED={templates:[TV,
  {id:"t1",nome:"Abertura do hub",ex:1,itens:[
   {id:"a",txt:"Docas livres e sinalizadas",tipo:"sn"},{id:"b",txt:"Empilhadeira com checklist do turno",tipo:"sn"},
   {id:"c",txt:"Temperatura da área de stage (°C)",tipo:"num"},{id:"d",txt:"Corredores sem material solto",tipo:"sn"},{id:"e",txt:"Foto da expedição",tipo:"foto"}]},
@@ -77,27 +133,39 @@ const SEED={templates:[
  execs:[
  {id:"e1",tpl:"t1",nome:"Abertura do hub",autor:"Exemplo",ts:Date.now()-864e5,ex:1,resp:{a:{v:"c"},b:{v:"nc",obs:"Checklist do turno não preenchido"},c:{v:"22"},d:{v:"c"}},acoes:[{id:"x1",txt:"Checklist do turno não preenchido",dono:"Líder do turno",feito:false}]},
  {id:"e2",tpl:"t2",nome:"Vistoria de veículo",autor:"Exemplo",ts:Date.now()-2*864e5,ex:1,resp:{a:{v:"c"},b:{v:"c"},c:{v:"ABC1D23"}},acoes:[]}]};
-let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S)S=structuredClone(SEED);if(!S.pool)S.pool=structuredClone(SEED.pool);if(!S.pool.coletas)S.pool.coletas=structuredClone(SEED.pool.coletas);
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S)S=structuredClone(SEED);if(!S.pool)S.pool=structuredClone(SEED.pool);if(!S.pool.coletas)S.pool.coletas=structuredClone(SEED.pool.coletas);if(!S.templates.some(t=>t.id==="tv"))S.templates.unshift(structuredClone(TV));
 let sampleP=null;setTimeout(()=>{try{sampleP=window.claude?.use?window.claude.use("sample"):Promise.resolve(null)}catch(e){sampleP=Promise.resolve(null)}},0);let iaOut=null,iaBusy=false;
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
-let tab="pal",cur=null,edit=null;
+let avisou=0;const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){if(!avisou){avisou=1;alert("Sem espaço no aparelho para salvar. Gere o PDF dos relatórios antigos e use Exemplos para limpar.")}}};
+const F=new Map();let idb=null;
+function idbOpen(){return new Promise(ok=>{try{const q=indexedDB.open("rota-fotos",1);q.onupgradeneeded=()=>q.result.createObjectStore("f");
+ q.onsuccess=()=>{idb=q.result;try{const c=idb.transaction("f").objectStore("f").openCursor();c.onsuccess=()=>{const r=c.result;if(r){F.set(r.key,r.value);r.continue()}else ok()};c.onerror=()=>ok()}catch(e){ok()}};q.onerror=()=>ok()}catch(e){ok()}})}
+function putFoto(url){if(!idb)return url;const k="f:"+uid();F.set(k,url);try{idb.transaction("f","readwrite").objectStore("f").put(url,k)}catch(e){return url}return k}
+const foto=v=>v?(String(v).startsWith("f:")?F.get(v):v):null;
+const fd=d=>d?String(d).split("-").reverse().join("/"):"";
+let tab="pal",cur=null,edit=null,rel=null,man=null;if(S.cur){cur=S.cur;tab="run"}
 
 function score(x){const t=S.templates.find(t=>t.id===x.tpl);const sn=(t?t.itens:[]).filter(i=>i.tipo==="sn");
  const v=sn.map(i=>x.resp[i.id]?.v).filter(v=>v==="c"||v==="nc");return v.length?Math.round(100*v.filter(x=>x==="c").length/v.length):null}
 const dt=ts=>new Date(ts).toLocaleString("pt-BR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
 
-function go(t){tab=t;cur=null;edit=null;render()}
+function go(t){tab=t;cur=null;edit=null;rel=null;man=null;render();scrollTo(0,0)}
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.t));
 
 function render(){
  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.t===tab));
  const a=$("#app");
  if(cur)return runView(a);
+ if(rel)return relView(a);
+ if(man)return manView(a);
  if(edit)return editView(a);
  const head=`<header><div><div class="eb">Gestão de pool de paletes</div><h1>Rota Paletes</h1></div><button id="reset" title="Volta aos dados de exemplo">Exemplos</button></header>`;
  if(tab==="run"){
-  a.innerHTML=head+`<div class="eb">Escolha um checklist para começar</div>`+S.templates.map(t=>`<div class="card tpl"><div style="min-width:0"><h2>${esc(t.nome)}</h2><div class="meta">${t.itens.length} itens ${t.ex?'<span class="ex">EXEMPLO</span>':""}</div></div><button class="pri" data-run="${t.id}">Iniciar</button></div>`).join("");
-  a.querySelectorAll("[data-run]").forEach(b=>b.onclick=()=>{const t=S.templates.find(x=>x.id===b.dataset.run);cur={id:uid(),tpl:t.id,nome:t.nome,autor:"Você",ts:Date.now(),resp:{},acoes:[]};render()});
+  const sc=S.cur;
+  a.innerHTML=head+(sc?`<div class="card tpl al"><div style="min-width:0"><div class="eb">Em andamento</div><h2>${esc(sc.nome)}</h2><div class="meta">${sc.local?esc(sc.local)+" · ":""}${Object.values(sc.resp).filter(r=>r.v).length} itens respondidos</div></div><div class="row"><button id="desc">Descartar</button><button class="pri" id="cont">Continuar</button></div></div>`:"")+
+  `<div class="eb">Escolha um roteiro para começar</div>`+S.templates.map(t=>`<div class="card tpl"><div style="min-width:0"><h2>${esc(t.nome)}</h2><div class="meta">${t.itens.length} itens${t.visita?" · manual, fotos e relatório em PDF":""} ${t.ex?'<span class="ex">EXEMPLO</span>':""}</div></div><div class="row">${t.itens.some(i=>i.como)?`<button data-man="${t.id}">Manual</button>`:""}<button class="pri" data-run="${t.id}">Iniciar</button></div></div>`).join("");
+  a.querySelectorAll("[data-run]").forEach(b=>b.onclick=()=>{const t=S.templates.find(x=>x.id===b.dataset.run);cur={id:uid(),tpl:t.id,nome:t.nome,autor:S.visitante||"",local:"",ts:Date.now(),resp:{},acoes:[]};S.cur=cur;save();render();scrollTo(0,0)});
+  a.querySelectorAll("[data-man]").forEach(b=>b.onclick=()=>{man=b.dataset.man;render();scrollTo(0,0)});
+  if(sc){$("#cont").onclick=()=>{cur=S.cur;render();scrollTo(0,0)};$("#desc").onclick=()=>{const d=$("#desc");if(!d.dataset.c){d.dataset.c=1;d.textContent="Confirmar";return}delete S.cur;save();render()}}
  }
  if(tab==="tpl"){
   a.innerHTML=head+`<button class="pri" id="novo">Novo modelo</button>`+S.templates.map(t=>`<div class="card tpl"><div style="min-width:0"><h2>${esc(t.nome)}</h2><div class="meta">${t.itens.map(i=>esc(i.txt)).slice(0,3).join(" · ")}${t.itens.length>3?" …":""}</div></div><button data-ed="${t.id}">Editar</button></div>`).join("");
@@ -108,12 +176,13 @@ function render(){
   const ex=S.execs,sc=ex.map(score).filter(v=>v!=null),med=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):0;
   const ab=ex.flatMap(e=>e.acoes.map(x=>({...x,e}))).filter(x=>!x.feito);
   a.innerHTML=head+`<div class="kpis"><div class="card kpi"><span class="eb">Execuções</span><b class="num">${ex.length}</b></div><div class="card kpi"><span class="eb">Conformidade</span><b>${med}%</b></div><div class="card kpi"><span class="eb">Ações abertas</span><b class="${ab.length?"bad":"ok"}">${ab.length}</b></div></div>
-  <div class="card"><h2>Plano de ação</h2>${ab.length?ab.map(x=>`<label class="row"><input type="checkbox" id="ac-${x.id}" data-ac="${x.id}" style="width:auto"><span class="sp" style="min-width:0"><b>${esc(x.txt)}</b><br><span class="meta">${esc(x.dono||"Sem responsável")} · ${esc(x.e.nome)} · ${dt(x.e.ts)}</span></span></label>`).join(""):`<p class="empty">Nenhuma não conformidade em aberto.</p>`}</div>
-  <div class="eb">Histórico</div>`+(ex.length?ex.slice().sort((a,b)=>b.ts-a.ts).map(e=>{const s=score(e);return `<div class="card"><div class="tpl"><div style="min-width:0"><h2>${esc(e.nome)}</h2><div class="meta">${esc(e.autor)} · ${dt(e.ts)} ${e.ex?'<span class="ex">EXEMPLO</span>':""}</div></div><span class="pill ${s>=90?"ok":"bad"}">${s==null?"—":s+"%"}</span></div><div class="bar"><i style="width:${s||0}%"></i></div></div>`}).join(""):`<p class="empty">Nenhum checklist executado ainda.</p>`);
+  <div class="card"><h2>Plano de ação</h2>${ab.length?ab.map(x=>`<label class="row"><input type="checkbox" id="ac-${x.id}" data-ac="${x.id}" style="width:auto"><span class="sp" style="min-width:0"><b>${esc(x.txt)}</b><br><span class="meta">${esc(x.dono||"Sem responsável")}${x.prazo?" · até "+fd(x.prazo):""} · ${esc(x.e.local||x.e.nome)} · ${dt(x.e.ts)}</span></span></label>`).join(""):`<p class="empty">Nenhuma não conformidade em aberto.</p>`}</div>
+  <div class="eb">Histórico</div>`+(ex.length?ex.slice().sort((a,b)=>b.ts-a.ts).map(e=>{const s=score(e);return `<div class="card"><div class="tpl"><div style="min-width:0"><h2>${esc(e.nome)}</h2><div class="meta">${e.local?esc(e.local)+" · ":""}${esc(e.autor)} · ${dt(e.ts)} ${e.ex?'<span class="ex">EXEMPLO</span>':""}</div></div><div class="row"><span class="pill ${s>=85?"ok":"bad"}">${s==null?"—":s+"%"}</span><button data-rel="${e.id}">Relatório</button></div></div><div class="bar"><i style="width:${s||0}%"></i></div></div>`}).join(""):`<p class="empty">Nenhum checklist executado ainda.</p>`);
   a.querySelectorAll("[data-ac]").forEach(c=>c.onchange=()=>{S.execs.forEach(e=>e.acoes.forEach(x=>{if(x.id===c.dataset.ac)x.feito=true}));save();render()});
+  a.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>{rel=b.dataset.rel;render();scrollTo(0,0)});
  }
  if(tab==="pal")palView(a,head);
- $("#reset").onclick=()=>{const b=$("#reset");if(b.dataset.c){S=structuredClone(SEED);save();render()}else{b.dataset.c=1;b.textContent="Confirmar?"}};
+ $("#reset").onclick=()=>{const b=$("#reset");if(b.dataset.c){S=structuredClone(SEED);cur=null;try{idb&&idb.transaction("f","readwrite").objectStore("f").clear();F.clear()}catch(e){}save();render()}else{b.dataset.c=1;b.textContent="Confirmar?"}};
 }
 
 
@@ -137,7 +206,7 @@ function palView(a,head){
  a.innerHTML=head+`<div class="eb">Saldo contábil × contagem física</div>
  <div class="kpis"><div class="card kpi"><span class="eb">No pool</span><b class="num">${tot}</b><span class="meta">${fora} fora do CD</span></div><div class="card kpi"><span class="eb">Divergência</span><b class="${divTot<0?"bad":"ok"}">${divTot>0?"+":""}${divTot}</b><span class="meta">físico − contábil</span></div><div class="card kpi"><span class="eb">Contagens vencidas</span><b class="${venc?"bad":"ok"}">${venc}</b><span class="meta">de ${L.length} locais</span></div></div>
  <div class="card ia"><div class="row"><h2 class="sp">Análise da IA</h2><button class="pri" id="ia-go">${iaBusy?"Analisando…":"Analisar pool"}</button></div><div id="ia-box">${iaOut||`<p class="meta">A IA lê saldos, divergências, perdas e idade das contagens e devolve onde contar primeiro, onde cobrar devolução e o risco de perda.</p>`}</div></div>
- <div class="card"><div class="row"><h2 class="sp">Fila de inventário</h2><span class="meta">ordem de prioridade</span></div>${L.map(l=>`<div class="loc"><div style="min-width:0"><b>${esc(l.nome)}</b><div class="meta">${l.tipo} · saldo <span class="num">${l.saldo}</span>${l.perdas?` · ${l.perdas} perdidos`:""}</div><div class="meta">${l.ult?`Contado há ${l.dias}d (ciclo ${l.ciclo}d)${l.div!=null?` · diferença <span class="num">${l.div>0?"+":""}${l.div}</span> (${l.divPct}%)`:""}`:"Nunca contado"}</div></div><div style="text-align:right"><span class="pill ${l.vencida||Math.abs(l.divPct||0)>3?"bad":"ok"}">${l.vencida?"Contar":Math.abs(l.divPct||0)>3?"Divergente":"Em dia"}</span></div></div>`).join("")}</div>
+ <div class="card"><div class="row"><h2 class="sp">Fila de inventário</h2><span class="meta">ordem de prioridade</span></div>${L.map(l=>`<div class="loc"><div style="min-width:0"><b>${esc(l.nome)}</b><div class="meta">${l.tipo} · saldo <span class="num">${l.saldo}</span>${l.perdas?` · ${l.perdas} perdidos`:""}</div><div class="meta">${l.ult?`Contado há ${l.dias}d (ciclo ${l.ciclo}d)${l.div!=null?` · diferença <span class="num">${l.div>0?"+":""}${l.div}</span>${l.divPct!=null?` (${l.divPct}%)`:""}`:""}`:"Nunca contado"}</div></div><div style="text-align:right"><span class="pill ${l.vencida||Math.abs(l.divPct||0)>3?"bad":"ok"}">${l.vencida?"Contar":Math.abs(l.divPct||0)>3?"Divergente":"Em dia"}</span></div></div>`).join("")}</div>
  <div class="card"><div class="row"><h2 class="sp">Coletas agendadas</h2><span class="meta">${insp.tot?`Inspeção dos retornos: ${insp.pb}% bons · ${insp.pr}% reparo · ${insp.ps}% sucata`:""}</span></div>${S.pool.coletas.filter(c=>!c.ok).sort((a,b)=>a.data.localeCompare(b.data)).map(c=>`<label class="row"><input type="checkbox" id="co-${c.id}" data-co="${c.id}" style="width:auto"><span class="sp"><b>${esc((S.pool.locais.find(l=>l.id===c.local)||{}).nome||"")}</b><br><span class="meta">${c.data.split("-").reverse().join("/")} · ${c.qtd} paletes</span></span></label>`).join("")||`<p class="meta">Nenhuma coleta pendente.</p>`}
  <div class="f3"><select id="co-l">${opt}</select><input id="co-d" type="date"><input id="co-q" type="number" inputmode="numeric" placeholder="Qtd"></div><button id="co-ok">Agendar coleta</button><p class="meta">Marcar a coleta como feita já lança o retorno no saldo.</p></div>
  <div class="card"><h2>Lançar movimento</h2><div class="f3"><select id="mv-l">${opt}</select><select id="mv-t"><option value="envio">Envio</option><option value="retorno">Retorno</option><option value="perda">Perda/dano</option></select><input id="mv-q" type="number" inputmode="numeric" placeholder="Qtd"></div><div id="mv-insp" class="f3"><input id="mv-bom" type="number" inputmode="numeric" placeholder="Bons"><input id="mv-rep" type="number" inputmode="numeric" placeholder="Para reparo"><input id="mv-suc" type="number" inputmode="numeric" placeholder="Sucata"></div><p class="meta">No retorno, a inspeção separa o que volta ao pool, o que vai para reparo e o que é descartado.</p><button id="mv-ok">Registrar movimento</button></div>
@@ -165,24 +234,79 @@ async function analisar(L){
  catch(e){iaOut=regras(L)}
  iaBusy=false;render()}
 
+function rr(){const y=scrollY;if(cur){S.cur=cur;save()}render();scrollTo(0,y)}
+const keep=()=>{if(cur){S.cur=cur;save()}};
+function grupos(t){const g=[];t.itens.forEach(i=>{const s=i.sec||"";if(!g.length||g[g.length-1].sec!==s)g.push({sec:s,itens:[]});g[g.length-1].itens.push(i)});return g}
+function nota(itens,resp){const v=itens.filter(i=>i.tipo==="sn").map(i=>resp[i.id]?.v).filter(v=>v==="c"||v==="nc");return{nota:v.length?Math.round(100*v.filter(x=>x==="c").length/v.length):null,nc:v.filter(x=>x==="nc").length}}
+function poolDe(nome){if(!nome)return null;const n=nome.trim().toLowerCase();return poolCalc().find(l=>l.nome.toLowerCase()===n)||null}
+function poolBox(l){if(!l)return"";const dv=Math.abs(l.divPct||0)>3,al=l.vencida||dv;
+ const st=l.ult?(l.vencida?`contagem vencida (${l.dias}d, ciclo ${l.ciclo}d)`:`contado há ${l.dias}d`):"nunca contado";
+ const pede=[l.vencida?"contagem física completa":"",dv?"reconciliação da divergência":""].filter(Boolean).join(" e ");
+ return `<div class="card ${al?"al":""}"><div class="eb">Pool de paletes neste local</div><div>Saldo contábil <b class="num">${l.saldo}</b> · ${st}${l.div!=null?` · diferença <span class="num">${l.div>0?"+":""}${l.div}</span>${l.divPct!=null?` (${l.divPct}%)`:""}`:""}${l.perdas?` · ${l.perdas} perdidos`:""}</div>${pede?`<div class="meta">Inclua na visita: ${pede}.</div>`:""}</div>`}
+function fotoCtl(id,v){const u=foto(v);return `<div class="row">${u?`<img class="thumb" src="${u}" alt="Foto anexada">`:""}<label class="fbtn">${u?"Trocar foto":"Foto"}<input type="file" accept="image/*" capture="environment" data-f="${id}" hidden></label></div>`}
+function itemHtml(i,r,vis){let ctl="";
+ if(i.tipo==="sn")ctl=`<div class="seg">${[["c","Conforme"],["nc","Não conf."],["na","N/A"]].map(([v,l])=>`<button data-i="${i.id}" data-v="${v}" aria-pressed="${r.v===v}">${l}</button>`).join("")}</div>${r.v==="nc"?`<input data-o="${i.id}" placeholder="O que corrigir" value="${esc(r.obs||"")}"><div class="f2"><input data-d="${i.id}" placeholder="Responsável" value="${esc(r.dono||"")}"><input type="date" data-p="${i.id}" value="${esc(r.prazo||"")}" aria-label="Prazo"></div>`:""}${vis?fotoCtl(i.id,r.foto):""}`;
+ if(i.tipo==="num")ctl=`<input type="number" inputmode="decimal" data-t="${i.id}" value="${esc(r.v||"")}">`;
+ if(i.tipo==="txt")ctl=`<input data-t="${i.id}" value="${esc(r.v||"")}">`;
+ if(i.tipo==="foto")ctl=fotoCtl(i.id,r.v);
+ return `<div class="item"><b>${esc(i.txt)}</b>${i.como?`<details><summary>Como verificar</summary><div class="como">${esc(i.como)}</div></details>`:""}${ctl}</div>`}
+
 function runView(a){
- const t=S.templates.find(x=>x.id===cur.tpl);const feitos=t.itens.filter(i=>cur.resp[i.id]?.v).length;
+ const t=S.templates.find(x=>x.id===cur.tpl);if(!t){cur=null;delete S.cur;save();return render()}
+ const tot=t.itens.length,feitos=t.itens.filter(i=>cur.resp[i.id]?.v).length,vis=!!t.visita;
  a.innerHTML=`<header><div><div class="eb">Em execução</div><h1>${esc(t.nome)}</h1></div><button id="sair">Sair</button></header>
- <div class="card"><div class="row"><span class="meta sp">${feitos} de ${t.itens.length} respondidos</span><span class="num">${Math.round(100*feitos/t.itens.length)}%</span></div><div class="bar"><i style="width:${100*feitos/t.itens.length}%"></i></div></div>
- <div class="card">${t.itens.map(i=>{const r=cur.resp[i.id]||{};let ctl="";
-  if(i.tipo==="sn")ctl=`<div class="seg">${[["c","Conforme"],["nc","Não conf."],["na","N/A"]].map(([v,l])=>`<button data-i="${i.id}" data-v="${v}" aria-pressed="${r.v===v}">${l}</button>`).join("")}</div>${r.v==="nc"?`<input id="o-${i.id}" data-o="${i.id}" placeholder="O que está errado?" value="${esc(r.obs||"")}"><input id="d-${i.id}" data-d="${i.id}" placeholder="Responsável pela correção" value="${esc(r.dono||"")}">`:""}`;
-  if(i.tipo==="num")ctl=`<input id="n-${i.id}" type="number" inputmode="decimal" data-t="${i.id}" value="${esc(r.v||"")}">`;
-  if(i.tipo==="txt")ctl=`<input id="x-${i.id}" data-t="${i.id}" value="${esc(r.v||"")}">`;
-  if(i.tipo==="foto")ctl=`<div class="row">${r.v?`<img class="thumb" src="${r.v}" alt="Foto anexada">`:""}<input id="f-${i.id}" type="file" accept="image/*" capture="environment" data-f="${i.id}"></div>`;
-  return `<div class="item"><b>${esc(i.txt)}</b>${ctl}</div>`}).join("")}</div>
- <button class="pri" id="fim">Concluir checklist</button>`;
+ <div class="card">${vis?`<div class="f2"><div><label class="eb" for="v-loc">Local visitado</label><input id="v-loc" list="locs" value="${esc(cur.local||"")}" placeholder="Centro, cliente ou base"><datalist id="locs">${S.pool.locais.map(l=>`<option value="${esc(l.nome)}">`).join("")}</datalist></div><div><label class="eb" for="v-aut">Visitante</label><input id="v-aut" value="${esc(cur.autor||"")}" placeholder="Seu nome"></div></div>`:""}
+ <div class="row"><span class="meta sp">${feitos} de ${tot} respondidos</span><span class="num">${Math.round(100*feitos/tot)}%</span></div><div class="bar"><i style="width:${100*feitos/tot}%"></i></div></div>
+ ${vis?poolBox(poolDe(cur.local)):""}
+ ${grupos(t).map(g=>{const n=nota(g.itens,cur.resp);return `<div class="card">${g.sec?`<div class="row"><h2 class="sp">${esc(g.sec)}</h2>${n.nota!=null?`<span class="pill ${n.nota>=85?"ok":"bad"}">${n.nota}%</span>`:""}</div>`:""}${g.itens.map(i=>itemHtml(i,cur.resp[i.id]||{},vis)).join("")}</div>`}).join("")}
+ ${vis?`<div class="card"><label class="eb" for="v-obs">Observações gerais</label><textarea id="v-obs" rows="3">${esc(cur.obs||"")}</textarea></div>`:""}
+ <button class="pri" id="fim">Concluir e gerar relatório</button><p class="meta" id="st"></p>`;
  $("#sair").onclick=()=>go("run");
- a.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{const id=b.dataset.i;cur.resp[id]={...cur.resp[id],v:b.dataset.v};render()});
- a.querySelectorAll("[data-o]").forEach(x=>x.oninput=()=>cur.resp[x.dataset.o].obs=x.value);
- a.querySelectorAll("[data-d]").forEach(x=>x.oninput=()=>cur.resp[x.dataset.d].dono=x.value);
- a.querySelectorAll("[data-t]").forEach(x=>x.onchange=()=>{cur.resp[x.dataset.t]={v:x.value};render()});
- a.querySelectorAll("[data-f]").forEach(x=>x.onchange=()=>{const f=x.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),k=Math.min(1,480/img.width);c.width=img.width*k;c.height=img.height*k;c.getContext("2d").drawImage(img,0,0,c.width,c.height);cur.resp[x.dataset.f]={v:c.toDataURL("image/jpeg",.6)};render()};img.src=URL.createObjectURL(f)});
- $("#fim").onclick=()=>{t.itens.forEach(i=>{const r=cur.resp[i.id];if(r&&r.v==="nc")cur.acoes.push({id:uid(),txt:r.obs||i.txt,dono:r.dono||"",feito:false})});S.execs.push(cur);save();go("rep")};
+ if(vis){$("#v-loc").onchange=e=>{cur.local=e.target.value.trim();rr()};$("#v-aut").oninput=e=>{cur.autor=e.target.value;S.visitante=e.target.value;keep()};$("#v-obs").oninput=e=>{cur.obs=e.target.value;keep()}}
+ a.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{const id=b.dataset.i;cur.resp[id]={...cur.resp[id],v:b.dataset.v};rr()});
+ a.querySelectorAll("[data-o]").forEach(x=>x.oninput=()=>{cur.resp[x.dataset.o].obs=x.value;keep()});
+ a.querySelectorAll("[data-d]").forEach(x=>x.oninput=()=>{cur.resp[x.dataset.d].dono=x.value;keep()});
+ a.querySelectorAll("[data-p]").forEach(x=>x.onchange=()=>{cur.resp[x.dataset.p].prazo=x.value;keep()});
+ a.querySelectorAll("[data-t]").forEach(x=>x.onchange=()=>{cur.resp[x.dataset.t]={...cur.resp[x.dataset.t],v:x.value};rr()});
+ a.querySelectorAll("[data-f]").forEach(x=>x.onchange=()=>{const f=x.files[0];if(!f)return;const id=x.dataset.f,it=t.itens.find(i=>i.id===id),img=new Image();
+  img.onload=()=>{const c=document.createElement("canvas"),k=Math.min(1,800/img.width);c.width=img.width*k;c.height=img.height*k;c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+   const key=putFoto(c.toDataURL("image/jpeg",.6));cur.resp[id]={...cur.resp[id],[it.tipo==="foto"?"v":"foto"]:key};URL.revokeObjectURL(img.src);rr()};img.src=URL.createObjectURL(f)});
+ $("#fim").onclick=()=>{
+  if(vis&&!cur.local){$("#st").textContent="Informe o local visitado antes de concluir.";$("#v-loc").focus();return}
+  if(!feitos){$("#st").textContent="Responda ao menos um item.";return}
+  cur.ts=Date.now();if(!cur.autor)cur.autor="Você";
+  cur.acoes=t.itens.filter(i=>cur.resp[i.id]?.v==="nc").map(i=>{const r=cur.resp[i.id];return{id:uid(),item:i.txt,txt:r.obs||i.txt,dono:r.dono||"",prazo:r.prazo||"",feito:false}});
+  S.execs.push(cur);delete S.cur;const id=cur.id;cur=null;save();tab="rep";rel=id;render();scrollTo(0,0)};
+}
+
+function imprimir(titulo){const o=document.title;document.title=titulo;window.print();setTimeout(()=>{document.title=o},1500)}
+function relView(a){
+ const x=S.execs.find(e=>e.id===rel);if(!x){rel=null;return render()}
+ const t=S.templates.find(z=>z.id===x.tpl)||{itens:[]},G=grupos(t),n=nota(t.itens,x.resp),aval=t.itens.filter(i=>x.resp[i.id]?.v).length;
+ const ST={c:["Conforme","ok"],nc:["Não conforme","bad"],na:["N/A","na"]},dia=new Date(x.ts).toLocaleDateString("pt-BR");
+ a.innerHTML=`<header><div><div class="eb">Relatório${t.visita?" de visita":""}</div><h1>${esc(x.nome)}</h1><div class="meta">${x.local?esc(x.local)+" · ":""}${dt(x.ts)} · ${esc(x.autor)}</div></div><button id="sair" class="np">Voltar</button></header>
+ <div class="row np"><button class="pri sp" id="pdf">Salvar PDF</button><button class="sp" id="shr">Compartilhar resumo</button></div>
+ <div class="kpis"><div class="card kpi"><span class="eb">Nota geral</span><b class="${n.nota==null?"":n.nota>=85?"ok":"bad"}">${n.nota==null?"—":n.nota+"%"}</b></div><div class="card kpi"><span class="eb">Não conformes</span><b class="${n.nc?"bad":"ok"}">${n.nc}</b></div><div class="card kpi"><span class="eb">Avaliados</span><b class="num">${aval}/${t.itens.length}</b></div></div>
+ ${poolBox(poolDe(x.local))}
+ ${G.length>1?`<div class="card"><h2>Resumo por área</h2><table class="tb"><tr><th>Área</th><th>Nota</th><th>NC</th></tr>${G.map(g=>{const k=nota(g.itens,x.resp);return `<tr><td>${esc(g.sec||"Geral")}</td><td class="${k.nota==null?"":k.nota>=85?"ok":"bad"}">${k.nota==null?"—":k.nota+"%"}</td><td>${k.nc}</td></tr>`}).join("")}</table></div>`:""}
+ <div class="card"><h2>Plano de ação</h2>${x.acoes.length?`<table class="tb"><tr><th>Item</th><th>O que corrigir</th><th>Responsável</th><th>Prazo</th></tr>${x.acoes.map(c=>`<tr><td>${esc(c.item||c.txt)}</td><td>${esc(c.txt)}</td><td>${esc(c.dono||"—")}</td><td>${c.prazo?fd(c.prazo):"—"}${c.feito?' <span class="pill ok">feito</span>':""}</td></tr>`).join("")}</table>`:`<p class="meta">Nenhuma não conformidade.</p>`}</div>
+ ${G.map(g=>`<div class="card"><h2>${esc(g.sec||"Detalhe")}</h2>${g.itens.map(i=>{const r=x.resp[i.id]||{},s=ST[r.v];
+  const val=i.tipo==="sn"?(s?`<span class="pill ${s[1]}">${s[0]}</span>`:`<span class="meta">Não avaliado</span>`):i.tipo==="foto"?"":`<span class="num">${esc(r.v||"—")}</span>`;const u=foto(i.tipo==="foto"?r.v:r.foto);
+  return `<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${val}</div>${r.v==="nc"&&r.obs?`<div class="meta">${esc(r.obs)}</div>`:""}${u?`<img class="rf" src="${u}" alt="Foto: ${esc(i.txt)}">`:""}</div>`}).join("")}</div>`).join("")}
+ ${x.obs?`<div class="card"><h2>Observações gerais</h2><p style="margin:0">${esc(x.obs)}</p></div>`:""}`;
+ $("#sair").onclick=()=>{rel=null;render();scrollTo(0,0)};
+ $("#pdf").onclick=()=>imprimir(`Relatório ${x.nome} ${x.local||""} ${dia}`.replace(/\s+/g," ").trim());
+ const resumo=`${x.nome}${x.local?" · "+x.local:""} · ${dia}\nNota geral: ${n.nota==null?"-":n.nota+"%"} · ${n.nc} não conformidades`+(x.acoes.length?"\n\nPlano de ação:\n"+x.acoes.map(c=>`- ${c.txt}${c.dono?" ("+c.dono+")":""}${c.prazo?" até "+fd(c.prazo):""}`).join("\n"):"");
+ $("#shr").onclick=async()=>{const b=$("#shr");try{if(navigator.share){await navigator.share({title:x.nome,text:resumo});return}}catch(e){if(e.name==="AbortError")return}
+  try{await navigator.clipboard.writeText(resumo);b.textContent="Resumo copiado"}catch(e){location.href="mailto:?subject="+encodeURIComponent(x.nome)+"&body="+encodeURIComponent(resumo)}};
+}
+
+function manView(a){
+ const t=S.templates.find(x=>x.id===man);if(!t){man=null;return render()}
+ a.innerHTML=`<header><div><div class="eb">Manual</div><h1>${esc(t.nome)}</h1></div><button id="sair" class="np">Voltar</button></header>${t.visita?`<div class="card"><p class="meta" style="margin:0">${MAN_INTRO}</p></div>`:""}`+
+ grupos(t).map(g=>`<div class="card">${g.sec?`<h2>${esc(g.sec)}</h2>`:""}${g.itens.map(i=>`<div class="item"><b>${esc(i.txt)}</b>${i.como?`<div class="meta">${esc(i.como)}</div>`:""}</div>`).join("")}</div>`).join("")+
+ `<button class="np" id="pm">Salvar manual em PDF</button>`;
+ $("#sair").onclick=()=>{man=null;render();scrollTo(0,0)};$("#pm").onclick=()=>imprimir("Manual "+t.nome);
 }
 
 function editView(a){
@@ -201,7 +325,7 @@ function editView(a){
   delete edit.ex;const k=S.templates.findIndex(t=>t.id===edit.id);if(k>=0)S.templates[k]=edit;else S.templates.push(edit);save();go("tpl")};
  const d=$("#del");if(d)d.onclick=()=>{if(!d.dataset.c){d.dataset.c=1;d.textContent="Confirmar";return}S.templates=S.templates.filter(t=>t.id!==edit.id);save();go("tpl")};
 }
-render();
+idbOpen().then(render);
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").then(r=>r.update()).catch(()=>{});navigator.serviceWorker?.addEventListener("controllerchange",()=>{if(!window.__rl){window.__rl=1;location.reload()}});
 </script>
 
