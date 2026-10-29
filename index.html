@@ -60,6 +60,14 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}.como{font-size:1
 .tb{width:100%;border-collapse:collapse;font-size:13px}.tb th,.tb td{text-align:left;padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
 .tb th{font:500 11px var(--fm);text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
 .rf{width:220px;max-width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px}
+.seg.wrap{flex-wrap:wrap}.seg.wrap button{flex:1 1 auto}
+.seg button[aria-pressed="true"]:not([data-v="c"]):not([data-v="nc"]):not([data-v="na"]){background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.fail{display:flex;flex-direction:column;gap:8px;border-left:3px solid var(--bad);padding-left:10px}
+.ass{width:100%;height:auto;aspect-ratio:3/1;background:#fff;border:1px dashed var(--line);border-radius:10px;touch-action:none;cursor:crosshair}
+.assimg{width:240px;max-width:100%;background:#fff;border-radius:8px;border:1px solid var(--line)}
+.ed2{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}.ed2:first-of-type{border-top:0;padding-top:0}
+.brief{white-space:pre-wrap;font-size:14px;background:var(--bg);border-radius:10px;padding:10px 12px}
+.pill:not(.ok):not(.bad):not(.na){color:var(--mut)}
 @media print{
  :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff;--card:#fff;--fg:#111;--mut:#555;--line:#ccc;--brand:#1F4D3A;--ok:#2E7D4F;--bad:#B23A24;--na:#777;color-scheme:light}
  .tabs,.np{display:none!important}body{padding:0;background:#fff}main{max-width:none;gap:10px}
@@ -78,35 +86,35 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 
 const ROTEIRO=[
  ["Segurança e EPI",[
-  ["EPI completo na operação","Observe 10 pessoas no pátio: luva, bota com biqueira e óculos no corte e na pregação. Uma pessoa sem EPI já é não conformidade."],
-  ["Circulação de empilhadeira sinalizada","Faixa de pedestre pintada, espelho nas esquinas e velocidade controlada. Fique 5 minutos num cruzamento."],
-  ["Pilhas dentro da altura máxima","Pilha de palete vazio no limite definido pelo centro (referência comum: 2,5 m ou 15 a 18 unidades), prumada e sem palete quebrado na base."],
-  ["Extintores e rotas de fuga livres","Extintor no lugar, com lacre e validade em dia, e nenhuma pilha bloqueando porta ou rota."]]],
+  ["EPI completo na operação","Observe 10 pessoas no pátio: luva, bota com biqueira e óculos no corte e na pregação. Uma pessoa sem EPI já é não conformidade.",3,1],
+  ["Circulação de empilhadeira sinalizada","Faixa de pedestre pintada, espelho nas esquinas e velocidade controlada. Fique 5 minutos num cruzamento.",3],
+  ["Pilhas dentro da altura máxima","Pilha de palete vazio no limite definido pelo centro (referência comum: 2,5 m ou 15 a 18 unidades), prumada e sem palete quebrado na base.",2],
+  ["Extintores e rotas de fuga livres","Extintor no lugar, com lacre e validade em dia, e nenhuma pilha bloqueando porta ou rota.",3,1]]],
  ["Recebimento e triagem",[
-  ["Retorno conferido contra a ordem de coleta","Pegue a última coleta recebida e compare quantidade física, nota e sistema. Diferença sem registro é não conformidade."],
+  ["Retorno conferido contra a ordem de coleta","Pegue a última coleta recebida e compare quantidade física, nota e sistema. Diferença sem registro é não conformidade.",3],
   ["Triagem feita no dia","Não pode haver palete de retorno parado sem classificação há mais de 24h. Pergunte a data da carga mais antiga no pátio."],
   ["Paletes de terceiros segregados","Palete que não é do pool, de outra cor ou outro dono, fica em área separada e identificada para devolução."],
   ["Avarias registradas com foto","Carga que chega muito danificada tem foto e registro para cobrança do cliente."]]],
  ["Inspeção e classificação",[
   ["Critério de inspeção visível no posto","O padrão (bom, reparo, sucata) com fotos de exemplo fica afixado onde o inspetor trabalha."],
-  ["Amostra de 10 paletes classificados certo","Pegue 10 paletes da pilha de bons e confira: tábua rachada, prego saliente, bloco solto ou contaminação reprovam."],
-  ["Palete contaminado isolado","Óleo, química ou mofo vai para área de quarentena com descarte ou limpeza registrados."],
+  ["Amostra de 10 paletes classificados certo","Pegue 10 paletes da pilha de bons e confira: tábua rachada, prego saliente, bloco solto ou contaminação reprovam.",3],
+  ["Palete contaminado isolado","Óleo, química ou mofo vai para área de quarentena com descarte ou limpeza registrados.",3,1],
   ["Taxa de reparo acompanhada","O centro sabe dizer o percentual de bons, reparo e sucata da última semana."]]],
  ["Reparo e tratamento térmico",[
   ["Reparo dentro do padrão do pool","Peça de reposição na mesma medida e espessura, pregação no padrão e marca da cor do pool refeita."],
-  ["Tratamento térmico com registro","Cada lote HT tem registro de tempo e temperatura conforme ISPM-15 e marcação IPPC legível no palete."],
+  ["Tratamento térmico com registro","Cada lote HT tem registro de tempo e temperatura conforme ISPM-15 e marcação IPPC legível no palete.",3,1],
   ["Madeira de reposição rastreável","Lote de madeira com origem identificada (fornecedor homologado, reflorestamento)."],
   ["Fila de reparo sob controle","Paletes aguardando reparo em quantidade compatível com a capacidade de 1 a 2 dias."]]],
  ["Estoque e inventário",[
-  ["Contagem física bate com o sistema","Conte uma área e compare com o saldo do sistema. Aceitável até 1% de diferença no próprio centro."],
+  ["Contagem física bate com o sistema","Conte uma área e compare com o saldo do sistema. Aceitável até 1% de diferença no próprio centro.",3],
   ["Inventário cíclico em dia","Veja a data da última contagem completa e do último cíclico. Calendário atrasado é não conformidade."],
   ["Estoque separado por status","Bons, reparo, sucata e terceiros em áreas demarcadas e identificadas."],
   ["Cobertura de estoque para abastecimento","Paletes bons disponíveis cobrem a demanda prevista dos próximos dias de entrega."]]],
  ["Expedição e abastecimento",[
-  ["Pedido de abastecimento conferido na carga","Quantidade carregada igual à ordem, com conferência registrada antes de o caminhão sair."],
+  ["Pedido de abastecimento conferido na carga","Quantidade carregada igual à ordem, com conferência registrada antes de o caminhão sair.",3],
   ["Veículo vistoriado","Baú limpo, seco e sem pregos expostos antes de carregar."],
   ["Documentos emitidos corretamente","Nota e ordem com cliente, quantidade e tipo de palete batendo."],
-  ["Coletas da semana no prazo","Compare as coletas agendadas com as realizadas. Coleta atrasada sem justificativa é não conformidade."]]],
+  ["Coletas da semana no prazo","Compare as coletas agendadas com as realizadas. Coleta atrasada sem justificativa é não conformidade.",2]]],
  ["Organização e 5S",[
   ["Pátio limpo e sem sucata espalhada","Sem pedaço de madeira, prego ou cinta no chão das áreas de circulação."],
   ["Ferramentas no lugar","Pregadeiras, serras e compressor guardados e com manutenção identificada."],
@@ -115,7 +123,7 @@ const ROTEIRO=[
   ["Plano de ação da visita anterior concluído","Abra as ações da última visita e verifique cada uma no local."],
   ["Indicadores do mês apresentados","Giro do pool, perdas, tempo de triagem, taxa de reparo e coletas no prazo."],
   ["Equipe treinada no padrão","Pergunte a 2 pessoas qual o critério de reprovação de um palete. As respostas têm de bater com o padrão."]]]];
-const TV={id:"tv",nome:"Visita a centro de serviço",visita:1,itens:ROTEIRO.flatMap(([sec,it],k)=>it.map(([txt,como],j)=>({id:"v"+k+"-"+j,txt,tipo:"sn",sec,como})))};
+const TV={id:"tv",nome:"Visita a centro de serviço",visita:1,rev:2,itens:ROTEIRO.flatMap(([sec,it],k)=>it.map(([txt,como,peso,critico],j)=>({id:"v"+k+"-"+j,txt,tipo:"sn",sec,como,peso:peso||1,critico:!!critico})))};
 const MAN_INTRO="Para cada item: o que olhar e quando marcar não conforme. Uma visita completa leva de 2 a 3 horas. Comece pela segurança, siga o fluxo do palete (recebimento, inspeção, reparo, estoque, expedição) e feche com a gestão do centro.";
 const SEED={templates:[TV,
  {id:"t1",nome:"Abertura do hub",ex:1,itens:[
@@ -133,22 +141,20 @@ const SEED={templates:[TV,
  execs:[
  {id:"e1",tpl:"t1",nome:"Abertura do hub",autor:"Exemplo",ts:Date.now()-864e5,ex:1,resp:{a:{v:"c"},b:{v:"nc",obs:"Checklist do turno não preenchido"},c:{v:"22"},d:{v:"c"}},acoes:[{id:"x1",txt:"Checklist do turno não preenchido",dono:"Líder do turno",feito:false}]},
  {id:"e2",tpl:"t2",nome:"Vistoria de veículo",autor:"Exemplo",ts:Date.now()-2*864e5,ex:1,resp:{a:{v:"c"},b:{v:"c"},c:{v:"ABC1D23"}},acoes:[]}]};
-let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S)S=structuredClone(SEED);if(!S.pool)S.pool=structuredClone(SEED.pool);if(!S.pool.coletas)S.pool.coletas=structuredClone(SEED.pool.coletas);if(!S.templates.some(t=>t.id==="tv"))S.templates.unshift(structuredClone(TV));
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S)S=structuredClone(SEED);if(!S.pool)S.pool=structuredClone(SEED.pool);if(!S.pool.coletas)S.pool.coletas=structuredClone(SEED.pool.coletas);if(!S.templates.some(t=>t.id==="tv"))S.templates.unshift(structuredClone(TV));{const tv=S.templates.find(t=>t.id==="tv");if(tv&&!tv.rev){tv.itens.forEach(i=>{const n=TV.itens.find(x=>x.id===i.id);if(n){i.peso=n.peso;i.critico=n.critico}});tv.rev=2}}
 let sampleP=null;setTimeout(()=>{try{sampleP=window.claude?.use?window.claude.use("sample"):Promise.resolve(null)}catch(e){sampleP=Promise.resolve(null)}},0);let iaOut=null,iaBusy=false;
 let avisou=0;const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){if(!avisou){avisou=1;alert("Sem espaço no aparelho para salvar. Gere o PDF dos relatórios antigos e use Exemplos para limpar.")}}};
 const F=new Map();let idb=null;
 function idbOpen(){return new Promise(ok=>{try{const q=indexedDB.open("rota-fotos",1);q.onupgradeneeded=()=>q.result.createObjectStore("f");
  q.onsuccess=()=>{idb=q.result;try{const c=idb.transaction("f").objectStore("f").openCursor();c.onsuccess=()=>{const r=c.result;if(r){F.set(r.key,r.value);r.continue()}else ok()};c.onerror=()=>ok()}catch(e){ok()}};q.onerror=()=>ok()}catch(e){ok()}})}
-function putFoto(url){if(!idb)return url;const k="f:"+uid();F.set(k,url);try{idb.transaction("f","readwrite").objectStore("f").put(url,k)}catch(e){return url}return k}
+function putFoto(url,k){if(!idb)return url;k=k||"f:"+uid();F.set(k,url);try{idb.transaction("f","readwrite").objectStore("f").put(url,k)}catch(e){return url}return k}
 const foto=v=>v?(String(v).startsWith("f:")?F.get(v):v):null;
 const fd=d=>d?String(d).split("-").reverse().join("/"):"";
-let tab="pal",cur=null,edit=null,rel=null,man=null;if(S.cur){cur=S.cur;tab="run"}
+let tab="pal",cur=null,edit=null,rel=null,man=null,wiz=null,sugBusy=null,briefBusy=0;if(S.cur){cur=S.cur;tab="run"}
 
-function score(x){const t=S.templates.find(t=>t.id===x.tpl);const sn=(t?t.itens:[]).filter(i=>i.tipo==="sn");
- const v=sn.map(i=>x.resp[i.id]?.v).filter(v=>v==="c"||v==="nc");return v.length?Math.round(100*v.filter(x=>x==="c").length/v.length):null}
 const dt=ts=>new Date(ts).toLocaleString("pt-BR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
 
-function go(t){tab=t;cur=null;edit=null;rel=null;man=null;render();scrollTo(0,0)}
+function go(t){tab=t;cur=null;edit=null;rel=null;man=null;wiz=null;render();scrollTo(0,0)}
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.t));
 
 function render(){
@@ -157,6 +163,7 @@ function render(){
  if(cur)return runView(a);
  if(rel)return relView(a);
  if(man)return manView(a);
+ if(wiz)return wizView(a);
  if(edit)return editView(a);
  const head=`<header><div><div class="eb">Gestão de pool de paletes</div><h1>Rota Paletes</h1></div><button id="reset" title="Volta aos dados de exemplo">Exemplos</button></header>`;
  if(tab==="run"){
@@ -168,9 +175,10 @@ function render(){
   if(sc){$("#cont").onclick=()=>{cur=S.cur;render();scrollTo(0,0)};$("#desc").onclick=()=>{const d=$("#desc");if(!d.dataset.c){d.dataset.c=1;d.textContent="Confirmar";return}delete S.cur;save();render()}}
  }
  if(tab==="tpl"){
-  a.innerHTML=head+`<button class="pri" id="novo">Novo modelo</button>`+S.templates.map(t=>`<div class="card tpl"><div style="min-width:0"><h2>${esc(t.nome)}</h2><div class="meta">${t.itens.map(i=>esc(i.txt)).slice(0,3).join(" · ")}${t.itens.length>3?" …":""}</div></div><button data-ed="${t.id}">Editar</button></div>`).join("");
-  $("#novo").onclick=()=>{edit={id:uid(),nome:"",itens:[{id:uid(),txt:"",tipo:"sn"}]};render()};
-  a.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{edit=structuredClone(S.templates.find(x=>x.id===b.dataset.ed));render()});
+  a.innerHTML=head+`<div class="card ia"><h2>Criar a partir de um briefing</h2><p class="meta" style="margin:0">Conte o que a empresa faz e o que precisa garantir. O app propõe as seções, o tipo de cada pergunta, os pesos e os itens críticos. Você revisa e salva.</p><button class="pri" id="wiz">Começar pelo briefing</button></div><button id="novo">Modelo em branco</button>`+S.templates.map(t=>`<div class="card tpl"><div style="min-width:0"><h2>${esc(t.nome)}</h2><div class="meta">${t.itens.length} itens · ${resumoPont(t)}</div></div><button data-ed="${t.id}">Editar</button></div>`).join("");
+  $("#wiz").onclick=()=>{wiz={br:"",obj:"aud",pont:"peso",tam:"20",ass:1};render();scrollTo(0,0)};
+  $("#novo").onclick=()=>{edit={id:uid(),nome:"",itens:[{id:uid(),txt:"",tipo:"sn",peso:1}]};render();scrollTo(0,0)};
+  a.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{edit=structuredClone(S.templates.find(x=>x.id===b.dataset.ed));render();scrollTo(0,0)});
  }
  if(tab==="rep"){
   const ex=S.execs,sc=ex.map(score).filter(v=>v!=null),med=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):0;
@@ -237,94 +245,331 @@ async function analisar(L){
 function rr(){const y=scrollY;if(cur){S.cur=cur;save()}render();scrollTo(0,y)}
 const keep=()=>{if(cur){S.cur=cur;save()}};
 function grupos(t){const g=[];t.itens.forEach(i=>{const s=i.sec||"";if(!g.length||g[g.length-1].sec!==s)g.push({sec:s,itens:[]});g[g.length-1].itens.push(i)});return g}
-function nota(itens,resp){const v=itens.filter(i=>i.tipo==="sn").map(i=>resp[i.id]?.v).filter(v=>v==="c"||v==="nc");return{nota:v.length?Math.round(100*v.filter(x=>x==="c").length/v.length):null,nc:v.filter(x=>x==="nc").length}}
+const PESOS=[1,2,3,5],PONTUA=["sn","esc","opc","num"];
+const TIPOS=[["sn","Conforme / Não conforme"],["esc","Nota de 1 a 5"],["opc","Múltipla escolha com pontos"],["num","Número ou contagem com faixa"],["txt","Texto livre"],["foto","Foto"],["ass","Assinatura"]];
+function frac(i,r){if(!r||r.v==null||r.v==="")return null;const v=r.v;
+ if(i.tipo==="sn")return v==="c"?1:v==="nc"?0:null;
+ if(i.tipo==="esc")return(+v-1)/4;
+ if(i.tipo==="opc"){const o=(i.opcoes||[]).find(o=>o.t===v);return o?o.p/100:null}
+ if(i.tipo==="num"){if(i.min==null&&i.max==null)return null;const n=+v;return(i.min==null||n>=i.min)&&(i.max==null||n<=i.max)?1:0}
+ return null}
+const falha=(i,r)=>{const f=frac(i,r);return f!=null&&f<.5};
+function nota(itens,resp){let s=0,w=0,nc=0;const crit=[];itens.forEach(i=>{const f=frac(i,resp[i.id]);if(f==null)return;const p=+i.peso||1;s+=p*f;w+=p;if(f<.5){nc++;if(i.critico)crit.push(i)}});
+ const b=w?Math.round(100*s/w):null;return{nota:b==null?null:crit.length?0:b,bruta:b,nc,crit}}
+function score(x){const t=S.templates.find(t=>t.id===x.tpl);return t?nota(t.itens,x.resp).nota:null}
+function resumoPont(t){const p=t.itens.filter(i=>PONTUA.includes(i.tipo)),c=t.itens.filter(i=>i.critico).length,w=p.some(i=>(+i.peso||1)>1);return `${p.length} pontuam${w?" com peso":""}${c?` · ${c} críticos`:""}`}
+const emDias=n=>new Date(Date.now()+n*864e5-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+async function ia(prompt){const s=sampleP?await sampleP:null;if(!s)return null;try{return await s.json(prompt,{modelTier:"default"})}catch(e){return null}}
 function poolDe(nome){if(!nome)return null;const n=nome.trim().toLowerCase();return poolCalc().find(l=>l.nome.toLowerCase()===n)||null}
 function poolBox(l){if(!l)return"";const dv=Math.abs(l.divPct||0)>3,al=l.vencida||dv;
  const st=l.ult?(l.vencida?`contagem vencida (${l.dias}d, ciclo ${l.ciclo}d)`:`contado há ${l.dias}d`):"nunca contado";
  const pede=[l.vencida?"contagem física completa":"",dv?"reconciliação da divergência":""].filter(Boolean).join(" e ");
  return `<div class="card ${al?"al":""}"><div class="eb">Pool de paletes neste local</div><div>Saldo contábil <b class="num">${l.saldo}</b> · ${st}${l.div!=null?` · diferença <span class="num">${l.div>0?"+":""}${l.div}</span>${l.divPct!=null?` (${l.divPct}%)`:""}`:""}${l.perdas?` · ${l.perdas} perdidos`:""}</div>${pede?`<div class="meta">Inclua na visita: ${pede}.</div>`:""}</div>`}
-function fotoCtl(id,v){const u=foto(v);return `<div class="row">${u?`<img class="thumb" src="${u}" alt="Foto anexada">`:""}<label class="fbtn">${u?"Trocar foto":"Foto"}<input type="file" accept="image/*" capture="environment" data-f="${id}" hidden></label></div>`}
-function itemHtml(i,r,vis){let ctl="";
- if(i.tipo==="sn")ctl=`<div class="seg">${[["c","Conforme"],["nc","Não conf."],["na","N/A"]].map(([v,l])=>`<button data-i="${i.id}" data-v="${v}" aria-pressed="${r.v===v}">${l}</button>`).join("")}</div>${r.v==="nc"?`<input data-o="${i.id}" placeholder="O que corrigir" value="${esc(r.obs||"")}"><div class="f2"><input data-d="${i.id}" placeholder="Responsável" value="${esc(r.dono||"")}"><input type="date" data-p="${i.id}" value="${esc(r.prazo||"")}" aria-label="Prazo"></div>`:""}${vis?fotoCtl(i.id,r.foto):""}`;
- if(i.tipo==="num")ctl=`<input type="number" inputmode="decimal" data-t="${i.id}" value="${esc(r.v||"")}">`;
+function fotoCtl(id,v,lbl){const u=foto(v);return `<div class="row">${u?`<img class="thumb" src="${u}" alt="Foto anexada">`:""}<label class="fbtn">${u?"Trocar foto":lbl||"Foto"}<input type="file" accept="image/*" capture="environment" data-f="${id}" hidden></label></div>`}
+const segBtns=(id,ops,v)=>`<div class="seg${ops.length>3?" wrap":""}">${ops.map(([o,l])=>`<button data-i="${id}" data-v="${esc(o)}" aria-pressed="${v!=null&&String(v)===String(o)}">${esc(l)}</button>`).join("")}</div>`;
+const tags=i=>(i.critico?`<span class="pill bad">crítico</span>`:"")+((+i.peso||1)>1?`<span class="pill">peso ${i.peso}</span>`:"");
+const faixa=i=>i.min!=null&&i.max!=null?`${i.min} a ${i.max}`:i.min!=null?`mínimo ${i.min}`:i.max!=null?`máximo ${i.max}`:"";
+const temV=r=>r&&r.v!=null&&r.v!=="";
+function itemHtml(i,r,vis){let ctl="";const f=falha(i,r),pont=PONTUA.includes(i.tipo);
+ if(i.tipo==="sn")ctl=segBtns(i.id,[["c","Conforme"],["nc","Não conf."],["na","N/A"]],r.v);
+ if(i.tipo==="esc")ctl=segBtns(i.id,[1,2,3,4,5].map(n=>[n,n]),r.v)+`<div class="meta">1 muito ruim · 3 aceitável · 5 excelente</div>`;
+ if(i.tipo==="opc")ctl=segBtns(i.id,(i.opcoes||[]).map(o=>[o.t,o.t]),r.v);
+ if(i.tipo==="num")ctl=`<input type="number" inputmode="decimal" data-t="${i.id}" value="${esc(r.v??"")}" placeholder="${faixa(i)?"Aceitável: "+faixa(i):"Valor"}">${temV(r)&&faixa(i)?`<span class="pill ${f?"bad":"ok"}">${f?"Fora da faixa":"Dentro da faixa"} · ${faixa(i)}</span>`:""}`;
  if(i.tipo==="txt")ctl=`<input data-t="${i.id}" value="${esc(r.v||"")}">`;
  if(i.tipo==="foto")ctl=fotoCtl(i.id,r.v);
- return `<div class="item"><b>${esc(i.txt)}</b>${i.como?`<details><summary>Como verificar</summary><div class="como">${esc(i.como)}</div></details>`:""}${ctl}</div>`}
+ if(i.tipo==="ass")ctl=foto(r.v)?`<img class="assimg" src="${foto(r.v)}" alt="Assinatura"><div class="row"><button data-lim="${i.id}">Assinar de novo</button></div>`:`<canvas class="ass" data-ass="${i.id}" width="900" height="300" aria-label="Área para assinar"></canvas><div class="meta">Assine com o dedo. Grava sozinho.</div>`;
+ const fb=f?`<div class="fail"><div class="row"><span class="eb sp">Plano de ação</span><button class="fbtn" data-sug="${i.id}">${sugBusy===i.id?"Pensando…":"Sugerir ação"}</button></div><input data-o="${i.id}" placeholder="O que corrigir" value="${esc(r.obs||"")}"><div class="f2"><input data-d="${i.id}" placeholder="Responsável" value="${esc(r.dono||"")}"><input type="date" data-p="${i.id}" value="${esc(r.prazo||"")}" aria-label="Prazo"></div>${i.fotoNC&&!r.foto?`<div class="meta bad">Foto obrigatória para esta falha.</div>`:""}</div>`:"";
+ const fot=pont&&(vis||f||i.fotoNC)?fotoCtl(i.id,r.foto,f&&i.fotoNC?"Foto da falha":"Foto"):"";
+ return `<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${tags(i)}</div>${i.como?`<details><summary>Como verificar</summary><div class="como">${esc(i.como)}</div></details>`:""}${ctl}${fb}${fot}</div>`}
 
 function runView(a){
  const t=S.templates.find(x=>x.id===cur.tpl);if(!t){cur=null;delete S.cur;save();return render()}
- const tot=t.itens.length,feitos=t.itens.filter(i=>cur.resp[i.id]?.v).length,vis=!!t.visita;
+ const tot=t.itens.length,feitos=t.itens.filter(i=>temV(cur.resp[i.id])).length,vis=!!t.visita,N=nota(t.itens,cur.resp);
  a.innerHTML=`<header><div><div class="eb">Em execução</div><h1>${esc(t.nome)}</h1></div><button id="sair">Sair</button></header>
  <div class="card">${vis?`<div class="f2"><div><label class="eb" for="v-loc">Local visitado</label><input id="v-loc" list="locs" value="${esc(cur.local||"")}" placeholder="Centro, cliente ou base"><datalist id="locs">${S.pool.locais.map(l=>`<option value="${esc(l.nome)}">`).join("")}</datalist></div><div><label class="eb" for="v-aut">Visitante</label><input id="v-aut" value="${esc(cur.autor||"")}" placeholder="Seu nome"></div></div>`:""}
- <div class="row"><span class="meta sp">${feitos} de ${tot} respondidos</span><span class="num">${Math.round(100*feitos/tot)}%</span></div><div class="bar"><i style="width:${100*feitos/tot}%"></i></div></div>
+ <div class="row"><span class="meta sp">${feitos} de ${tot} respondidos</span>${N.nota!=null?`<span class="pill ${N.nota>=85?"ok":"bad"}">nota ${N.nota}%</span>`:""}</div><div class="bar"><i style="width:${100*feitos/tot}%"></i></div></div>
+ ${N.crit.length?`<div class="card al"><b class="bad">Falha crítica: ${N.crit.map(i=>esc(i.txt)).join("; ")}</b><span class="meta">Com falha crítica a nota vai a zero. Sem ela seria ${N.bruta}%.</span></div>`:""}
  ${vis?poolBox(poolDe(cur.local)):""}
- ${grupos(t).map(g=>{const n=nota(g.itens,cur.resp);return `<div class="card">${g.sec?`<div class="row"><h2 class="sp">${esc(g.sec)}</h2>${n.nota!=null?`<span class="pill ${n.nota>=85?"ok":"bad"}">${n.nota}%</span>`:""}</div>`:""}${g.itens.map(i=>itemHtml(i,cur.resp[i.id]||{},vis)).join("")}</div>`}).join("")}
+ ${grupos(t).map(g=>{const n=nota(g.itens,cur.resp);return `<div class="card">${g.sec?`<div class="row"><h2 class="sp">${esc(g.sec)}</h2>${n.bruta!=null?`<span class="pill ${n.bruta>=85&&!n.crit.length?"ok":"bad"}">${n.bruta}%</span>`:""}</div>`:""}${g.itens.map(i=>itemHtml(i,cur.resp[i.id]||{},vis)).join("")}</div>`}).join("")}
  ${vis?`<div class="card"><label class="eb" for="v-obs">Observações gerais</label><textarea id="v-obs" rows="3">${esc(cur.obs||"")}</textarea></div>`:""}
  <button class="pri" id="fim">Concluir e gerar relatório</button><p class="meta" id="st"></p>`;
+ const q=(s,f)=>a.querySelectorAll(s).forEach(f),R=id=>cur.resp[id]||(cur.resp[id]={});
  $("#sair").onclick=()=>go("run");
  if(vis){$("#v-loc").onchange=e=>{cur.local=e.target.value.trim();rr()};$("#v-aut").oninput=e=>{cur.autor=e.target.value;S.visitante=e.target.value;keep()};$("#v-obs").oninput=e=>{cur.obs=e.target.value;keep()}}
- a.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{const id=b.dataset.i;cur.resp[id]={...cur.resp[id],v:b.dataset.v};rr()});
- a.querySelectorAll("[data-o]").forEach(x=>x.oninput=()=>{cur.resp[x.dataset.o].obs=x.value;keep()});
- a.querySelectorAll("[data-d]").forEach(x=>x.oninput=()=>{cur.resp[x.dataset.d].dono=x.value;keep()});
- a.querySelectorAll("[data-p]").forEach(x=>x.onchange=()=>{cur.resp[x.dataset.p].prazo=x.value;keep()});
- a.querySelectorAll("[data-t]").forEach(x=>x.onchange=()=>{cur.resp[x.dataset.t]={...cur.resp[x.dataset.t],v:x.value};rr()});
- a.querySelectorAll("[data-f]").forEach(x=>x.onchange=()=>{const f=x.files[0];if(!f)return;const id=x.dataset.f,it=t.itens.find(i=>i.id===id),img=new Image();
+ q("[data-v]",b=>b.onclick=()=>{const r=R(b.dataset.i),v=b.dataset.v;r.v=String(r.v)===v?null:v;rr()});
+ q("[data-o]",x=>x.oninput=()=>{R(x.dataset.o).obs=x.value;keep()});
+ q("[data-d]",x=>x.oninput=()=>{R(x.dataset.d).dono=x.value;keep()});
+ q("[data-p]",x=>x.onchange=()=>{R(x.dataset.p).prazo=x.value;keep()});
+ q("[data-t]",x=>x.onchange=()=>{R(x.dataset.t).v=x.value;rr()});
+ q("[data-lim]",b=>b.onclick=()=>{R(b.dataset.lim).v=null;rr()});
+ q("[data-f]",x=>x.onchange=()=>{const f=x.files[0];if(!f)return;const id=x.dataset.f,it=t.itens.find(i=>i.id===id),img=new Image();
   img.onload=()=>{const c=document.createElement("canvas"),k=Math.min(1,800/img.width);c.width=img.width*k;c.height=img.height*k;c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-   const key=putFoto(c.toDataURL("image/jpeg",.6));cur.resp[id]={...cur.resp[id],[it.tipo==="foto"?"v":"foto"]:key};URL.revokeObjectURL(img.src);rr()};img.src=URL.createObjectURL(f)});
- $("#fim").onclick=()=>{
-  if(vis&&!cur.local){$("#st").textContent="Informe o local visitado antes de concluir.";$("#v-loc").focus();return}
-  if(!feitos){$("#st").textContent="Responda ao menos um item.";return}
+   R(id)[it.tipo==="foto"?"v":"foto"]=putFoto(c.toDataURL("image/jpeg",.6));URL.revokeObjectURL(img.src);rr()};img.src=URL.createObjectURL(f)});
+ q("canvas[data-ass]",cv=>{const g=cv.getContext("2d"),id=cv.dataset.ass;g.lineWidth=4;g.lineCap="round";g.lineJoin="round";g.strokeStyle="#17201B";let dn=0;
+  const pt=e=>{const b=cv.getBoundingClientRect();return[(e.clientX-b.left)*cv.width/b.width,(e.clientY-b.top)*cv.height/b.height]};
+  cv.onpointerdown=e=>{dn=1;try{cv.setPointerCapture(e.pointerId)}catch(_){}const[x,y]=pt(e);g.beginPath();g.moveTo(x,y)};
+  cv.onpointermove=e=>{if(!dn)return;const[x,y]=pt(e);g.lineTo(x,y);g.stroke()};
+  cv.onpointerup=cv.onpointercancel=()=>{if(!dn)return;dn=0;R(id).v=putFoto(cv.toDataURL("image/png"),"f:ass-"+cur.id+"-"+id);keep()}});
+ q("[data-sug]",b=>b.onclick=async()=>{const id=b.dataset.sug,i=t.itens.find(x=>x.id===id),r=R(id);sugBusy=id;rr();
+  const g=await ia(`Você apoia ${vis?"auditorias de campo":"checklists operacionais"}. Contexto da empresa: ${t.briefing||"não informado"}. Local: ${cur.local||"não informado"}. Item reprovado: "${i.txt}". Critério de verificação: ${i.como||"não informado"}. Constatação de quem aplicou: ${r.obs||"não descrita"}.${i.critico?" É um item crítico.":""} Proponha UMA ação corretiva objetiva (comece com verbo no infinitivo, diga o que fazer e como comprovar), o responsável típico (cargo, não nome) e o prazo em dias. Português do Brasil, sem travessão. JSON {"acao":string,"responsavel":string,"prazo_dias":number}.`);
+  const acao=g&&g.acao?g.acao:(r.obs?r.obs.replace(/\.?\s*$/,". Ação: "):"")+(i.acao||`Corrigir "${i.txt}" e registrar foto da correção`);
+  const dias=g&&+g.prazo_dias>0?Math.round(+g.prazo_dias):i.critico?1:(+i.peso||1)>=3?3:7;
+  Object.assign(r,{obs:acao,dono:r.dono||(g&&g.responsavel)||"",prazo:r.prazo||emDias(dias)});sugBusy=null;rr()});
+ $("#fim").onclick=()=>{const st=$("#st");
+  if(vis&&!cur.local){st.textContent="Informe o local visitado antes de concluir.";$("#v-loc").focus();return}
+  if(!feitos){st.textContent="Responda ao menos um item.";return}
+  const semFoto=t.itens.filter(i=>i.fotoNC&&falha(i,cur.resp[i.id])&&!cur.resp[i.id].foto);
+  if(semFoto.length){st.textContent="Falta a foto da falha em: "+semFoto.map(i=>i.txt).join("; ")+".";return}
   cur.ts=Date.now();if(!cur.autor)cur.autor="Você";
-  cur.acoes=t.itens.filter(i=>cur.resp[i.id]?.v==="nc").map(i=>{const r=cur.resp[i.id];return{id:uid(),item:i.txt,txt:r.obs||i.txt,dono:r.dono||"",prazo:r.prazo||"",feito:false}});
+  cur.acoes=t.itens.filter(i=>falha(i,cur.resp[i.id])).map(i=>{const r=cur.resp[i.id];return{id:uid(),item:i.txt,txt:r.obs||i.acao||("Corrigir: "+i.txt),dono:r.dono||"",prazo:r.prazo||"",critico:!!i.critico,feito:false}});
   S.execs.push(cur);delete S.cur;const id=cur.id;cur=null;save();tab="rep";rel=id;render();scrollTo(0,0)};
 }
 
 function imprimir(titulo){const o=document.title;document.title=titulo;window.print();setTimeout(()=>{document.title=o},1500)}
+function valHtml(i,r){const f=falha(i,r),ST={c:["Conforme","ok"],nc:["Não conforme","bad"],na:["N/A","na"]};
+ if(i.tipo==="sn"){const s=ST[r.v];return s?`<span class="pill ${s[1]}">${s[0]}</span>`:`<span class="meta">Não avaliado</span>`}
+ if(!temV(r))return i.tipo==="foto"||i.tipo==="ass"?"":`<span class="meta">Não avaliado</span>`;
+ if(i.tipo==="esc")return `<span class="pill ${f?"bad":"ok"}">${esc(r.v)}/5</span>`;
+ if(i.tipo==="opc")return `<span class="pill ${f?"bad":"ok"}">${esc(r.v)}</span>`;
+ if(i.tipo==="num")return `<span class="pill ${frac(i,r)==null?"":f?"bad":"ok"}">${esc(r.v)}${faixa(i)?" · faixa "+faixa(i):""}</span>`;
+ if(i.tipo==="txt")return `<span>${esc(r.v)}</span>`;return ""}
 function relView(a){
  const x=S.execs.find(e=>e.id===rel);if(!x){rel=null;return render()}
- const t=S.templates.find(z=>z.id===x.tpl)||{itens:[]},G=grupos(t),n=nota(t.itens,x.resp),aval=t.itens.filter(i=>x.resp[i.id]?.v).length;
- const ST={c:["Conforme","ok"],nc:["Não conforme","bad"],na:["N/A","na"]},dia=new Date(x.ts).toLocaleDateString("pt-BR");
+ const t=S.templates.find(z=>z.id===x.tpl)||{itens:[]},G=grupos(t),N=nota(t.itens,x.resp),aval=t.itens.filter(i=>temV(x.resp[i.id])).length,dia=new Date(x.ts).toLocaleDateString("pt-BR"),B=x.brief||{};
  a.innerHTML=`<header><div><div class="eb">Relatório${t.visita?" de visita":""}</div><h1>${esc(x.nome)}</h1><div class="meta">${x.local?esc(x.local)+" · ":""}${dt(x.ts)} · ${esc(x.autor)}</div></div><button id="sair" class="np">Voltar</button></header>
  <div class="row np"><button class="pri sp" id="pdf">Salvar PDF</button><button class="sp" id="shr">Compartilhar resumo</button></div>
- <div class="kpis"><div class="card kpi"><span class="eb">Nota geral</span><b class="${n.nota==null?"":n.nota>=85?"ok":"bad"}">${n.nota==null?"—":n.nota+"%"}</b></div><div class="card kpi"><span class="eb">Não conformes</span><b class="${n.nc?"bad":"ok"}">${n.nc}</b></div><div class="card kpi"><span class="eb">Avaliados</span><b class="num">${aval}/${t.itens.length}</b></div></div>
+ <div class="kpis"><div class="card kpi"><span class="eb">Nota geral</span><b class="${N.nota==null?"":N.nota>=85?"ok":"bad"}">${N.nota==null?"—":N.nota+"%"}</b></div><div class="card kpi"><span class="eb">Falhas</span><b class="${N.nc?"bad":"ok"}">${N.nc}</b></div><div class="card kpi"><span class="eb">Avaliados</span><b class="num">${aval}/${t.itens.length}</b></div></div>
+ ${N.crit.length?`<div class="card al"><b class="bad">Falha crítica: ${N.crit.map(i=>esc(i.txt)).join("; ")}</b><span class="meta">A nota foi zerada pela falha crítica. Sem ela seria ${N.bruta}%.</span></div>`:""}
  ${poolBox(poolDe(x.local))}
- ${G.length>1?`<div class="card"><h2>Resumo por área</h2><table class="tb"><tr><th>Área</th><th>Nota</th><th>NC</th></tr>${G.map(g=>{const k=nota(g.itens,x.resp);return `<tr><td>${esc(g.sec||"Geral")}</td><td class="${k.nota==null?"":k.nota>=85?"ok":"bad"}">${k.nota==null?"—":k.nota+"%"}</td><td>${k.nc}</td></tr>`}).join("")}</table></div>`:""}
- <div class="card"><h2>Plano de ação</h2>${x.acoes.length?`<table class="tb"><tr><th>Item</th><th>O que corrigir</th><th>Responsável</th><th>Prazo</th></tr>${x.acoes.map(c=>`<tr><td>${esc(c.item||c.txt)}</td><td>${esc(c.txt)}</td><td>${esc(c.dono||"—")}</td><td>${c.prazo?fd(c.prazo):"—"}${c.feito?' <span class="pill ok">feito</span>':""}</td></tr>`).join("")}</table>`:`<p class="meta">Nenhuma não conformidade.</p>`}</div>
- ${G.map(g=>`<div class="card"><h2>${esc(g.sec||"Detalhe")}</h2>${g.itens.map(i=>{const r=x.resp[i.id]||{},s=ST[r.v];
-  const val=i.tipo==="sn"?(s?`<span class="pill ${s[1]}">${s[0]}</span>`:`<span class="meta">Não avaliado</span>`):i.tipo==="foto"?"":`<span class="num">${esc(r.v||"—")}</span>`;const u=foto(i.tipo==="foto"?r.v:r.foto);
-  return `<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${val}</div>${r.v==="nc"&&r.obs?`<div class="meta">${esc(r.obs)}</div>`:""}${u?`<img class="rf" src="${u}" alt="Foto: ${esc(i.txt)}">`:""}</div>`}).join("")}</div>`).join("")}
+ ${G.length>1?`<div class="card"><h2>Resumo por área</h2><table class="tb"><tr><th>Área</th><th>Nota</th><th>Falhas</th></tr>${G.map(g=>{const k=nota(g.itens,x.resp);return `<tr><td>${esc(g.sec||"Geral")}</td><td class="${k.bruta==null?"":k.bruta>=85&&!k.crit.length?"ok":"bad"}">${k.bruta==null?"—":k.bruta+"%"}</td><td>${k.nc}</td></tr>`}).join("")}</table></div>`:""}
+ <div class="card"><h2>Plano de ação</h2>${x.acoes.length?`<table class="tb"><tr><th>Item</th><th>O que corrigir</th><th>Responsável</th><th>Prazo</th></tr>${x.acoes.map(c=>`<tr><td>${esc(c.item||c.txt)}${c.critico?' <span class="pill bad">crítico</span>':""}</td><td>${esc(c.txt)}</td><td>${esc(c.dono||"—")}</td><td>${c.prazo?fd(c.prazo):"—"}${c.feito?' <span class="pill ok">feito</span>':""}</td></tr>`).join("")}</table>`:`<p class="meta">Nenhuma falha.</p>`}</div>
+ <div class="card"><div class="row"><h2 class="sp">Briefing</h2><span class="row np"><button data-br="gestor">${B.gestor?"Refazer gestor":"Para o gestor"}</button><button data-br="key">${B.key?"Refazer key user":"Para o key user"}</button></span></div>
+ ${briefBusy?`<p class="meta">Escrevendo o briefing…</p>`:""}
+ ${B.gestor?`<div class="eb">Para o gestor</div><div class="brief">${esc(B.gestor)}</div>`:""}
+ ${B.key?`<div class="eb">Para o key user</div><div class="brief">${esc(B.key)}</div>`:""}
+ ${!B.gestor&&!B.key&&!briefBusy?`<p class="meta np" style="margin:0">O do gestor traz veredito, nota, tendência, riscos e a decisão que ele precisa tomar. O do key user traz o que corrigir, quem, até quando e como será conferido.</p>`:""}
+ ${B.gestor||B.key?`<div class="row np"><button id="br-cp">Copiar briefing</button></div>`:""}</div>
+ ${G.map(g=>`<div class="card"><h2>${esc(g.sec||"Detalhe")}</h2>${g.itens.map(i=>{const r=x.resp[i.id]||{},u=foto(i.tipo==="foto"||i.tipo==="ass"?r.v:r.foto);
+  return `<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${valHtml(i,r)}</div>${falha(i,r)&&r.obs?`<div class="meta">${esc(r.obs)}</div>`:""}${u?`<img class="${i.tipo==="ass"?"assimg":"rf"}" src="${u}" alt="${i.tipo==="ass"?"Assinatura":"Foto: "+esc(i.txt)}">`:""}</div>`}).join("")}</div>`).join("")}
  ${x.obs?`<div class="card"><h2>Observações gerais</h2><p style="margin:0">${esc(x.obs)}</p></div>`:""}`;
  $("#sair").onclick=()=>{rel=null;render();scrollTo(0,0)};
  $("#pdf").onclick=()=>imprimir(`Relatório ${x.nome} ${x.local||""} ${dia}`.replace(/\s+/g," ").trim());
- const resumo=`${x.nome}${x.local?" · "+x.local:""} · ${dia}\nNota geral: ${n.nota==null?"-":n.nota+"%"} · ${n.nc} não conformidades`+(x.acoes.length?"\n\nPlano de ação:\n"+x.acoes.map(c=>`- ${c.txt}${c.dono?" ("+c.dono+")":""}${c.prazo?" até "+fd(c.prazo):""}`).join("\n"):"");
- $("#shr").onclick=async()=>{const b=$("#shr");try{if(navigator.share){await navigator.share({title:x.nome,text:resumo});return}}catch(e){if(e.name==="AbortError")return}
-  try{await navigator.clipboard.writeText(resumo);b.textContent="Resumo copiado"}catch(e){location.href="mailto:?subject="+encodeURIComponent(x.nome)+"&body="+encodeURIComponent(resumo)}};
+ const resumo=`${x.nome}${x.local?" · "+x.local:""} · ${dia}\nNota geral: ${N.nota==null?"-":N.nota+"%"} · ${N.nc} falhas${N.crit.length?" (com falha crítica)":""}`+(x.acoes.length?"\n\nPlano de ação:\n"+x.acoes.map(c=>`- ${c.txt}${c.dono?" ("+c.dono+")":""}${c.prazo?" até "+fd(c.prazo):""}`).join("\n"):"");
+ const enviar=async(txt,b)=>{try{if(navigator.share){await navigator.share({title:x.nome,text:txt});return}}catch(e){if(e.name==="AbortError")return}
+  try{await navigator.clipboard.writeText(txt);b.textContent="Copiado"}catch(e){location.href="mailto:?subject="+encodeURIComponent(x.nome)+"&body="+encodeURIComponent(txt)}};
+ $("#shr").onclick=()=>enviar(resumo,$("#shr"));
+ a.querySelectorAll("[data-br]").forEach(b=>b.onclick=()=>gerarBrief(x,t,b.dataset.br));
+ const cp=$("#br-cp");if(cp)cp.onclick=async()=>{const txt=[B.gestor?"PARA O GESTOR\n"+B.gestor:"",B.key?"PARA O KEY USER\n"+B.key:""].filter(Boolean).join("\n\n");try{await navigator.clipboard.writeText(txt);cp.textContent="Briefing copiado"}catch(e){enviar(txt,cp)}};
 }
+
+function dadosBrief(x,t){const N=nota(t.itens,x.resp),sec=grupos(t).filter(g=>g.sec).map(g=>({area:g.sec,...nota(g.itens,x.resp)})).filter(s=>s.bruta!=null);
+ const ant=S.execs.filter(e=>e.id!==x.id&&e.tpl===x.tpl&&(e.local||"")===(x.local||"")&&e.ts<x.ts).sort((a,b)=>b.ts-a.ts)[0];
+ return{roteiro:x.nome,local:x.local||"",data:new Date(x.ts).toLocaleDateString("pt-BR"),aplicado_por:x.autor,nota:N.nota,nota_sem_critico:N.bruta,falhas:N.nc,falhas_criticas:N.crit.map(i=>i.txt),
+  areas:sec.map(s=>({area:s.area,nota:s.bruta,falhas:s.nc})),nota_anterior:ant?score(ant):null,
+  acoes:x.acoes.map(c=>({item:c.item||c.txt,acao:c.txt,responsavel:c.dono,prazo:c.prazo?fd(c.prazo):"",prazo_iso:c.prazo,critico:!!c.critico,feito:!!c.feito,como_verificar:(t.itens.find(i=>i.txt===c.item)||{}).como||""})),
+  observacoes:x.obs||"",contexto:t.briefing||""}}
+function briefLocal(kind,d){const ord=d.areas.slice().sort((a,b)=>a.nota-b.nota),pior=ord[0],melhor=ord[ord.length-1],ab=d.acoes.filter(c=>!c.feito),L=[];
+ if(kind==="gestor"){
+  const ver=d.falhas_criticas.length?"Atenção imediata":d.nota==null?"Sem nota":d.nota>=85?"Dentro do padrão":d.nota>=70?"Abaixo do padrão, com correções simples":"Fora do padrão";
+  L.push(`${ver}: ${d.local||d.roteiro} teve nota ${d.nota??"-"}% em ${d.data}, com ${d.falhas} ${d.falhas===1?"falha":"falhas"}.`);
+  if(d.falhas_criticas.length)L.push(`Falha crítica em ${d.falhas_criticas.join("; ")}. Sem ela a nota seria ${d.nota_sem_critico}%.`);
+  if(d.nota_anterior!=null){const df=(d.nota??0)-d.nota_anterior;L.push(`Visita anterior: ${d.nota_anterior}%. ${df>0?`Subiu ${df} pontos.`:df<0?`Caiu ${-df} pontos.`:"Sem variação."}`)}
+  if(pior&&melhor&&pior!==melhor)L.push(`Pior área: ${pior.area} (${pior.nota}%).${melhor.nota>=85?` Referência: ${melhor.area} (${melhor.nota}%).`:""}`);
+  if(ab.length){const sem=ab.filter(c=>!c.responsavel).length,curto=ab.filter(c=>c.prazo_iso&&c.prazo_iso<=emDias(7)).length;
+   L.push(`${ab.length} ${ab.length===1?"ação aberta":"ações abertas"}, ${curto} com prazo em até 7 dias${sem?`, ${sem} sem responsável`:""}. Principais: ${ab.slice().sort((a,b)=>b.critico-a.critico).slice(0,3).map(c=>c.acao+(c.responsavel?" ("+c.responsavel+")":"")).join("; ")}.`)}
+  L.push(`Decisão pedida: ${d.falhas_criticas.length?"liberar a correção imediata do item crítico e confirmar em revisita curta":d.nota!=null&&d.nota<70?"agendar revisita em até 30 dias e cobrar o plano de ação":"manter o ciclo normal de visitas"}${ab.some(c=>!c.responsavel)?" e definir os responsáveis que faltam":""}.`);
+ }else{
+  L.push(`Plano de ação de ${d.local||d.roteiro} (${d.data}):`);
+  ab.slice().sort((a,b)=>b.critico-a.critico).forEach((c,k)=>L.push(`${k+1}. ${c.critico?"[CRÍTICO] ":""}${c.acao}. Responsável: ${c.responsavel||"a definir"}. Prazo: ${c.prazo||"a definir"}.${c.como_verificar?" Como será conferido: "+c.como_verificar:""}`));
+  if(!ab.length)L.push("Nenhuma correção pendente.");
+  if(melhor&&melhor.nota>=85)L.push(`Manter: ${melhor.area} está em ${melhor.nota}%.`);
+ }
+ return L.join("\n")}
+async function gerarBrief(x,t,kind){briefBusy=1;const y=scrollY;render();scrollTo(0,y);const d=dadosBrief(x,t);
+ const pede=kind==="gestor"?"Escreva o briefing para o GESTOR: de 5 a 7 linhas curtas. Comece pelo veredito em uma frase; depois nota e comparação com a anterior; riscos, com falhas críticas primeiro; as 3 ações que mais importam, com dono e prazo; e termine com a decisão ou o apoio que o gestor precisa dar.":"Escreva o briefing para o KEY USER do local, quem executa as correções: lista numerada das ações, críticas primeiro, cada uma com o que fazer, responsável, prazo e como será conferido na próxima visita. Feche com o que está bom e deve ser mantido.";
+ const r=await ia(`Você é consultor de operações. ${pede} Português do Brasil, direto, texto simples, sem markdown e sem travessão. Dados: ${JSON.stringify(d)}. Responda em JSON {"texto":string}.`);
+ x.brief={...(x.brief||{}),[kind]:r&&r.texto?String(r.texto):briefLocal(kind,d)};briefBusy=0;save();render();scrollTo(0,y)}
 
 function manView(a){
  const t=S.templates.find(x=>x.id===man);if(!t){man=null;return render()}
- a.innerHTML=`<header><div><div class="eb">Manual</div><h1>${esc(t.nome)}</h1></div><button id="sair" class="np">Voltar</button></header>${t.visita?`<div class="card"><p class="meta" style="margin:0">${MAN_INTRO}</p></div>`:""}`+
- grupos(t).map(g=>`<div class="card">${g.sec?`<h2>${esc(g.sec)}</h2>`:""}${g.itens.map(i=>`<div class="item"><b>${esc(i.txt)}</b>${i.como?`<div class="meta">${esc(i.como)}</div>`:""}</div>`).join("")}</div>`).join("")+
+ a.innerHTML=`<header><div><div class="eb">Manual</div><h1>${esc(t.nome)}</h1></div><button id="sair" class="np">Voltar</button></header>${t.visita&&t.id==="tv"?`<div class="card"><p class="meta" style="margin:0">${MAN_INTRO}</p></div>`:""}`+
+ grupos(t).map(g=>`<div class="card">${g.sec?`<h2>${esc(g.sec)}</h2>`:""}${g.itens.map(i=>`<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${tags(i)}</div>${i.como?`<div class="meta">${esc(i.como)}</div>`:""}</div>`).join("")}</div>`).join("")+
  `<button class="np" id="pm">Salvar manual em PDF</button>`;
  $("#sair").onclick=()=>{man=null;render();scrollTo(0,0)};$("#pm").onclick=()=>imprimir("Manual "+t.nome);
 }
 
-function editView(a){
- a.innerHTML=`<header><div><div class="eb">Construtor</div><h1>${edit.nome?esc(edit.nome):"Novo modelo"}</h1></div><button id="sair">Cancelar</button></header>
- <div class="card"><label class="eb" for="ed-nome">Nome do checklist</label><input id="ed-nome" value="${esc(edit.nome)}" placeholder="Ex.: Fechamento do turno"></div>
- <div class="card"><div class="eb">Itens</div>${edit.itens.map((i,k)=>`<div class="ed"><input id="it-${i.id}" data-k="${k}" value="${esc(i.txt)}" placeholder="Pergunta"><select id="ty-${i.id}" data-s="${k}">${[["sn","Sim/Não"],["num","Número"],["txt","Texto"],["foto","Foto"]].map(([v,l])=>`<option value="${v}" ${i.tipo===v?"selected":""}>${l}</option>`).join("")}</select><button data-x="${k}" aria-label="Remover item">×</button></div>`).join("")}
- <button id="add">Adicionar item</button></div>
- <div class="row"><button class="pri sp" id="salvar">Salvar modelo</button>${S.templates.some(t=>t.id===edit.id)?`<button id="del">Excluir</button>`:""}</div>`;
+/* ===== Criar roteiro a partir de briefing ===== */
+const OBJ=[["aud","Auditoria / visita"],["turno","Rotina de turno"],["seg","Segurança"],["qual","Qualidade"],["inv","Inventário"],["veic","Vistoria de veículo"]];
+const PONT=[["bin","Binária","Conforme ou não. Nota = % de itens conformes. O mais simples para quem aplica."],["peso","Pontos com peso","Itens de maior risco valem mais e itens críticos zeram a nota quando falham."],["esc","Escala 1 a 5","Mede o quanto está bom, não só se existe. Bom para qualidade, limpeza e atendimento."],["misto","Misto","Cada pergunta recebe o tipo que faz mais sentido: binária, escala, faixa numérica, foto e assinatura."]];
+const TAM=[["10","Rápido · ~10"],["20","Padrão · ~20"],["30","Completo · ~30"]];
+/* banco: [pergunta, como verificar, risco 1-3, crítico, ação padrão, tipo, extra] */
+const BANCO={
+ seg:["Segurança",[
+  ["EPI completo em uso na operação","Observe 10 pessoas trabalhando: luva, bota de segurança e óculos onde houver risco. Uma pessoa sem EPI já é falha.",3,1,"Parar a atividade, entregar o EPI e reforçar o uso no DDS do turno"],
+  ["Rotas de fuga e extintores livres e sinalizados","Extintor no lugar, lacrado e na validade; nenhuma carga bloqueando porta ou corredor de emergência.",3,1,"Desobstruir a rota no mesmo dia e substituir o extintor vencido"],
+  ["Circulação de empilhadeira separada de pedestres","Faixa pintada, espelho nos cruzamentos e velocidade controlada. Observe um cruzamento por 5 minutos.",3,0,"Repintar a faixa de pedestre e instalar espelho nos cruzamentos"],
+  ["Equipamentos com inspeção do turno registrada","Empilhadeira e paleteira com o checklist do dia preenchido e assinado.",2,0,"Bloquear o equipamento sem inspeção e treinar o operador"],
+  ["Pilhas e prateleiras dentro da altura e carga máxima","Pilha prumada, sem item quebrado na base e respeitando a placa de carga.",2,0,"Desmontar a pilha fora do padrão e sinalizar a altura máxima"],
+  ["Produtos químicos identificados e com contenção","Rótulo legível, ficha de segurança acessível e bacia de contenção para líquidos.",2,0,"Identificar os produtos e providenciar bacia de contenção"]]],
+ arm:["Operação",[
+  ["Recebimento conferido contra nota e sistema","Pegue a última carga recebida e compare quantidade física, nota e lançamento no sistema.",3,0,"Reconciliar a divergência e registrar no sistema com justificativa"],
+  ["Expedição conferida antes do carregamento","Pedido conferido por quem não separou, com registro antes de o veículo sair.",3,0,"Implantar dupla conferência na expedição"],
+  ["Endereços e etiquetas legíveis","Confira 10 posições: etiqueta presente, legível e batendo com o sistema.",2,0,"Reetiquetar as posições com falha e revisar o cadastro"],
+  ["Material avariado segregado e identificado","Avaria em área própria, com etiqueta e registro para tratativa.",2,0,"Separar a avaria e abrir registro de tratativa"],
+  ["Pedidos do dia expedidos no prazo","Compare os pedidos programados com os expedidos até o horário de corte.",2,0,"Levantar a causa dos atrasos e ajustar a programação do turno"],
+  ["Docas livres, limpas e sinalizadas","Nenhum material parado na doca além da carga em operação; piso limpo e sinalização visível.",1,0,"Liberar a doca e definir área de espera para material parado"],
+  ["Corredores e áreas de circulação livres","Sem material solto, filme ou cinta no chão das áreas de circulação.",1,0,"Limpar a área e colocar coletor de descarte no posto"]]],
+ loja:["Loja",[
+  ["Preço visível e igual ao do caixa","Confira 10 etiquetas contra o preço no caixa. Qualquer diferença é falha.",3,1,"Corrigir as etiquetas e revisar a carga de preços"],
+  ["Produtos dentro da validade","Amostra de 20 itens com validade na área de venda: nenhum vencido exposto.",3,1,"Retirar os vencidos e reforçar a rotina de verificação de validade"],
+  ["Gôndolas abastecidas, sem ruptura","Escolha 10 itens de maior giro: no máximo 1 sem produto na área de venda.",2,0,"Repor os itens e revisar o pedido de abastecimento"],
+  ["Cliente abordado em até 1 minuto","Entre como cliente e cronometre até alguém oferecer ajuda.",2,0,"Revisar a escala do salão nos horários de pico","esc"],
+  ["Fachada e vitrine limpas e iluminadas","Olhe da calçada: letreiro aceso, vidro limpo, nada quebrado ou improvisado.",1,0,"Acionar limpeza e manutenção da fachada","esc"],
+  ["Área de venda e caixas limpos e organizados","Piso, gôndola e checkout sem sujeira, caixas ou material de reposição esquecido.",1,0,"Ajustar a rotina de limpeza e reposição","esc"],
+  ["Equipe uniformizada e identificada","Crachá e uniforme completos em todos do turno.",1,0,"Repor uniforme e crachá"]]],
+ alim:["Segurança dos alimentos",[
+  ["Nenhum produto vencido em estoque ou exposição","Confira 20 itens entre câmara, estoque seco e exposição.",3,1,"Descartar o vencido com registro e revisar o PVPS"],
+  ["Temperatura da câmara de resfriados (°C)","Leia o termômetro da câmara. Aceitável de 0 a 5 °C.",3,1,"Transferir os produtos, acionar manutenção e registrar a temperatura a cada hora","num",{min:0,max:5}],
+  ["Manipuladores com uniforme, touca e mãos higienizadas","Observe a equipe de produção por 5 minutos.",3,0,"Reforçar as boas práticas no início do turno"],
+  ["Alimentos abertos identificados com data","Todo item aberto ou manipulado com etiqueta de data e validade.",2,0,"Etiquetar os itens e treinar a equipe na etiquetagem"],
+  ["Controle de pragas em dia","Certificado da última dedetização dentro da validade e nenhum sinal de pragas.",2,0,"Agendar a dedetização e vedar pontos de entrada"],
+  ["Lixo separado e tampado","Lixeiras com tampa e pedal, sem acúmulo.",1,0,"Ajustar a frequência de coleta interna"]]],
+ veic:["Veículo",[
+  ["Placa do veículo","Anote a placa.",1,0,"","txt"],
+  ["Pneus e estepe em bom estado","Sulco acima do indicador, sem bolha, corte ou desgaste irregular.",3,1,"Não liberar o veículo até a troca do pneu"],
+  ["Luzes, setas e freio funcionando","Teste com um ajudante: farol, lanterna, seta, luz de freio e ré.",3,1,"Reparar antes da saída"],
+  ["Documentos do veículo e do motorista em dia","Documento do veículo do ano e CNH válida na categoria correta.",3,1,"Bloquear a viagem até regularizar"],
+  ["Baú limpo, seco e sem pregos expostos","Olhe piso, paredes e teto do baú.",2,0,"Limpar e reparar o baú antes de carregar"],
+  ["Itens de amarração e proteção de carga a bordo","Cintas, cantoneiras e lona em quantidade para a carga.",2,0,"Completar o kit de amarração"],
+  ["Hodômetro (km)","Anote a quilometragem atual.",1,0,"","num"],
+  ["Foto do veículo","Foto da frente com a placa visível.",1,0,"","foto"]]],
+ qual:["Qualidade",[
+  ["Amostra de 10 itens aprovados confere com o padrão","Pegue 10 itens já aprovados e confira contra o padrão. Um reprovado é falha.",3,0,"Reinspecionar o lote e reciclar o inspetor no padrão"],
+  ["Padrão de qualidade afixado no posto","Critério de aprovação e reprovação com fotos de exemplo visível onde se inspeciona.",2,0,"Imprimir e afixar o padrão no posto"],
+  ["Itens reprovados segregados e identificados","Área de reprovados demarcada, com etiqueta e destino definido.",2,0,"Demarcar a área e etiquetar os reprovados"],
+  ["Índice de reprovação acompanhado","O responsável sabe dizer o % de reprovação da última semana e a principal causa.",2,0,"Implantar o registro diário de reprovações por causa"],
+  ["Instrumentos de medição calibrados","Etiqueta de calibração dentro da validade.",2,0,"Enviar o instrumento para calibração"],
+  ["Reclamações de cliente tratadas","Últimas reclamações com causa e ação registradas.",2,0,"Abrir análise de causa para as reclamações sem tratativa"]]],
+ inv:["Inventário",[
+  ["Diferença da contagem contra o sistema (%)","Conte uma área ou família e lance a diferença em %. Aceitável de -1 a 1.",3,0,"Recontar, investigar os movimentos e ajustar com aprovação","num",{min:-1,max:1}],
+  ["Ajustes de inventário justificados e aprovados","Últimos 10 ajustes com motivo e aprovação registrados.",3,0,"Revisar com o gestor os ajustes sem justificativa"],
+  ["Inventário cíclico dentro do calendário","Data do último cíclico de cada área contra o calendário.",2,0,"Replanejar o calendário e contar as áreas atrasadas"],
+  ["Estoque separado por status","Bom, avaria, bloqueado e de terceiros em áreas demarcadas.",2,0,"Demarcar as áreas e reclassificar o estoque"],
+  ["Movimentações lançadas no mesmo dia","Nenhuma nota ou transferência física sem lançamento no sistema.",2,0,"Lançar as pendências e definir horário de corte"]]],
+ ges:["Gestão",[
+  ["Plano de ação anterior concluído","Abra as ações da última visita e confira cada uma no local.",2,0,"Cobrar as ações vencidas com novo prazo"],
+  ["Equipe treinada no padrão","Pergunte a 2 pessoas qual o critério principal da operação. As respostas têm de bater com o padrão.",2,0,"Agendar reciclagem do padrão com a equipe"],
+  ["Indicadores do mês atualizados e à vista","Quadro com os indicadores da semana e o plano de ação em andamento.",1,0,"Atualizar o quadro de gestão à vista"],
+  ["Responsável do local presente na visita","Quem responde pelo local acompanhou a visita e assumiu as ações.",1,0,"Alinhar com o responsável a rotina de visitas"]]]};
+const SEGN={pal:"Paletes",alim:"Alimentos",loja:"Loja",veic:"Frota",arm:"Operação"},OBJN={aud:"Auditoria",turno:"Rotina de turno",seg:"Segurança",qual:"Qualidade",inv:"Inventário",veic:"Vistoria de veículo"};
+function segmento(br){const b=(br||"").toLowerCase();
+ return /palet|pallet|pbr|chep|\bgee\b/.test(b)?"pal":/aliment|restaurant|cozinha|padaria|lanchonete|refeiç|food/.test(b)?"alim":/loja|varejo|supermerc|mercado|vitrine|g[ôo]ndola|atendimento/.test(b)?"loja":/ve[íi]cul|frota|caminh|motorist|\bvan\b/.test(b)?"veic":"arm"}
+function secoesDe(k){if(k==="pal")return ROTEIRO.map(([sec,it])=>({sec,itens:it.map(([txt,como,peso,crit])=>[txt,como,peso||1,crit?1:0,""])}));const b=BANCO[k];return b?[{sec:b[0],itens:b[1]}]:[]}
+function gerarLocal(w){const s=segmento(w.br),o=w.obj,N=+w.tam;
+ const plano={aud:s==="pal"?["pal"]:["seg",s,"ges"],turno:["seg",s==="pal"?"arm":s],seg:["seg",s==="pal"?"arm":s],qual:["qual",s],inv:["inv",s==="pal"?"arm":s],veic:["veic","seg"]}[o]||["seg",s];
+ const secs=[...new Set(plano)].flatMap(secoesDe);
+ /* escolhe por rodadas: o item de maior risco de cada seção primeiro, até o tamanho pedido */
+ const fila=secs.map(x=>x.itens.map((it,k)=>({it,k})).sort((a,b)=>b.it[2]-a.it[2]));const pega=secs.map(()=>new Set());let n=0;
+ for(let r=0;n<N&&fila.some(f=>f.length>r);r++)fila.forEach((f,j)=>{if(n<N&&f[r]){pega[j].add(f[r].k);n++}});
+ const itens=[];secs.forEach((x,j)=>x.itens.forEach((it,k)=>{if(!pega[j].has(k))return;const[txt,como,risco,crit,acao,tipoB,extra]=it;let tipo=tipoB||"sn";const pontua=PONTUA.includes(tipo)||!tipoB;
+  const i={id:uid(),txt,tipo,sec:x.sec,como,acao:acao||"",peso:1,critico:false,fotoNC:false};
+  if(tipo==="num"&&extra){i.min=extra.min;i.max=extra.max}
+  if(pontua){
+   if(w.pont==="bin"){if(i.tipo!=="num"||!extra)i.tipo="sn";if(i.tipo==="sn"){delete i.min;delete i.max}}
+   else{i.peso=[1,1,2,3][risco]||1;i.critico=!!crit;i.fotoNC=risco>=3;
+    if(w.pont==="peso"&&i.tipo==="esc")i.tipo="sn";
+    if(w.pont==="esc"&&!crit&&i.tipo==="sn")i.tipo="esc"}}
+  itens.push(i)}));
+ if(w.ass)itens.push({id:uid(),txt:"Assinatura do responsável pelo local",tipo:"ass",sec:"Fechamento",como:"Quem responde pelo local assina ao final, depois de ver o plano de ação.",peso:1});
+ return{id:uid(),nome:`${OBJN[o]} · ${SEGN[s]}`,visita:["aud","qual","inv","seg"].includes(o)?1:0,briefing:w.br,itens}}
+function pedido(w){const n=+w.tam,o=OBJ.find(x=>x[0]===w.obj)[1],p=PONT.find(x=>x[0]===w.pont);
+ return `Monte um checklist de campo em português do Brasil.
+Contexto da empresa: ${w.br||"não informado"}
+Objetivo: ${o}. Tamanho: cerca de ${n} perguntas.
+Forma de pontuar: ${p[1]}. ${p[2]}
+Regras:
+- Agrupe em seções na ordem do percurso físico de quem aplica.
+- Perguntas afirmativas e objetivas, em que a resposta boa é sempre "conforme". Não misture polaridade.
+- Para cada pergunta, escreva em "como" o que olhar, a amostra e o número de referência.
+- "peso" 1, 2, 3 ou 5 conforme o risco. "critico": true só para risco à vida, legal ou ao produto; a falha zera a nota.
+- "fotoNC": true quando a falha precisa de evidência.
+- "acao": a ação corretiva padrão se a pergunta falhar.
+- Tipos: "sn" (conforme / não conforme), "esc" (nota de 1 a 5), "opc" (escolha com "opcoes":[{"t":texto,"p":0 a 100}]), "num" (número com "min" e "max" aceitáveis), "txt", "foto", "ass" (assinatura).
+${w.pont==="bin"?'- Use só "sn", peso 1 e nenhum crítico.':w.pont==="esc"?'- Use "esc" na maioria; "sn" só para os itens críticos.':w.pont==="peso"?'- Use "sn" com pesos e críticos; "num" quando houver medição com faixa.':"- Escolha o melhor tipo para cada pergunta."}
+${w.ass?'- Termine com uma pergunta do tipo "ass": assinatura do responsável pelo local.':""}
+Responda só com JSON, sem texto antes ou depois:
+{"nome":string,"visita":boolean,"itens":[{"sec":string,"txt":string,"tipo":string,"peso":number,"critico":boolean,"fotoNC":boolean,"como":string,"acao":string,"opcoes":[],"min":null,"max":null}]}`}
+function normTpl(o,w){const num=v=>v===null||v===undefined||v===""||isNaN(+v)?null:+v,ok=TIPOS.map(t=>t[0]);
+ return{id:uid(),nome:String(o.nome||"Novo roteiro").slice(0,80),visita:o.visita!=null?(o.visita?1:0):w&&w.obj==="aud"?1:0,briefing:w?w.br:"",
+  itens:(Array.isArray(o.itens)?o.itens:[]).filter(i=>i&&i.txt).slice(0,80).map(i=>{const tipo=ok.includes(i.tipo)?i.tipo:"sn";
+   const it={id:uid(),txt:String(i.txt).slice(0,200),tipo,sec:i.sec?String(i.sec).slice(0,60):"",peso:PESOS.includes(+i.peso)?+i.peso:1,critico:!!i.critico,fotoNC:!!i.fotoNC,como:i.como?String(i.como):"",acao:i.acao?String(i.acao):""};
+   if(tipo==="opc"){it.opcoes=(Array.isArray(i.opcoes)?i.opcoes:[]).map(x=>({t:String(x&&typeof x==="object"?x.t??x.texto??"":x).slice(0,40),p:Math.max(0,Math.min(100,+(x&&x.p)||0))})).filter(x=>x.t);if(it.opcoes.length<2)it.opcoes=[{t:"Bom",p:100},{t:"Regular",p:50},{t:"Ruim",p:0}]}
+   if(tipo==="num"){it.min=num(i.min);it.max=num(i.max)}
+   if(!PONTUA.includes(tipo)){it.peso=1;it.critico=false;it.fotoNC=false}return it})}}
+const segW=(k,ops,v)=>`<div class="seg wrap">${ops.map(([o,l])=>`<button data-wk="${k}" data-wo="${o}" aria-pressed="${v===o}">${esc(l)}</button>`).join("")}</div>`;
+function wizView(a){const w=wiz;
+ a.innerHTML=`<header><div><div class="eb">Novo roteiro</div><h1>Criar a partir de um briefing</h1></div><button id="sair">Cancelar</button></header>
+ <div class="card"><label class="eb" for="wz-br">O que a empresa faz e o que você quer garantir</label><textarea id="wz-br" rows="5" placeholder="Ex.: Centro de serviço de paletes em Cajamar, 40 pessoas. Recebe o retorno dos clientes, faz triagem, reparo e tratamento térmico e abastece supermercados. Quero auditar segurança, qualidade da classificação e controle de estoque.">${esc(w.br)}</textarea></div>
+ <div class="card"><div class="eb">Objetivo</div>${segW("obj",OBJ,w.obj)}</div>
+ <div class="card"><div class="eb">Como pontuar</div>${segW("pont",PONT.map(p=>[p[0],p[1]]),w.pont)}<p class="meta" style="margin:0">${PONT.find(p=>p[0]===w.pont)[2]}</p></div>
+ <div class="card"><div class="eb">Tamanho</div>${segW("tam",TAM,w.tam)}<label class="row meta"><input type="checkbox" id="wz-ass" ${w.ass?"checked":""} style="width:auto"><span class="sp">Fechar com assinatura do responsável pelo local</span></label></div>
+ <button class="pri" id="wz-go" ${w.busy?"disabled":""}>${w.busy?"Montando o roteiro…":"Gerar roteiro"}</button>${w.msg?`<p class="meta bad">${esc(w.msg)}</p>`:""}
+ <div class="card"><h2>Usar outra IA</h2><p class="meta" style="margin:0">Copie o pedido, cole no ChatGPT, Gemini ou Claude e traga a resposta para cá. O app monta o roteiro com ela.</p><div class="row"><button id="wz-cp">Copiar pedido</button></div><details><summary>Ver o pedido</summary><textarea id="wz-pd" rows="8" readonly>${esc(pedido(w))}</textarea></details><textarea id="wz-in" rows="4" placeholder="Cole aqui a resposta da IA">${esc(w.imp||"")}</textarea><button id="wz-imp">Importar resposta</button></div>`;
+ const er=()=>{const y=scrollY;render();scrollTo(0,y)};
  $("#sair").onclick=()=>go("tpl");
- $("#ed-nome").oninput=e=>edit.nome=e.target.value;
- a.querySelectorAll("[data-k]").forEach(x=>x.oninput=()=>edit.itens[x.dataset.k].txt=x.value);
- a.querySelectorAll("[data-s]").forEach(x=>x.onchange=()=>edit.itens[x.dataset.s].tipo=x.value);
- a.querySelectorAll("[data-x]").forEach(x=>x.onclick=()=>{edit.itens.splice(x.dataset.x,1);render()});
- $("#add").onclick=()=>{edit.itens.push({id:uid(),txt:"",tipo:"sn"});render()};
+ $("#wz-br").oninput=e=>{w.br=e.target.value;w.msg=""};$("#wz-in").oninput=e=>w.imp=e.target.value;$("#wz-ass").onchange=e=>{w.ass=e.target.checked?1:0};
+ a.querySelectorAll("[data-wk]").forEach(b=>b.onclick=()=>{w[b.dataset.wk]=b.dataset.wo;er()});
+ const abre=(t,fonte)=>{edit=t;edit.fonte=fonte;wiz=null;render();scrollTo(0,0)};
+ $("#wz-go").onclick=async()=>{if(!w.br.trim()){w.msg="Escreva o briefing primeiro: o que a empresa faz e o que quer garantir.";return er()}
+  w.busy=1;w.msg="";er();const r=await ia(pedido(w));w.busy=0;
+  const t=r&&Array.isArray(r.itens)&&r.itens.length?normTpl(r,w):null;t&&t.itens.length?abre(t,"IA"):abre(gerarLocal(w),"biblioteca")};
+ $("#wz-cp").onclick=async()=>{const b=$("#wz-cp");try{await navigator.clipboard.writeText(pedido(w));b.textContent="Pedido copiado"}catch(e){const d=a.querySelector("details");d.open=true;$("#wz-pd").select();b.textContent="Selecione e copie o texto abaixo"}};
+ $("#wz-imp").onclick=()=>{const s=w.imp||"";try{const j=JSON.parse(s.slice(s.indexOf("{"),s.lastIndexOf("}")+1));const t=normTpl(j,w);if(!t.itens.length)throw 0;abre(t,"outra IA")}catch(e){w.msg="Não consegui ler a resposta. Cole o JSON completo, do { ao }.";er()}};
+}
+
+/* ===== Construtor ===== */
+const opStr=o=>(o||[]).map(x=>x.t+"="+x.p).join("; ");
+function opParse(s){const a=String(s).split(/[;\n]/).map(x=>x.trim()).filter(Boolean);
+ return a.map((x,k)=>{const m=x.match(/^(.*?)\s*=\s*(-?\d+)\s*$/);return m?{t:m[1].trim(),p:Math.max(0,Math.min(100,+m[2]))}:{t:x,p:a.length>1?Math.round(100*(a.length-1-k)/(a.length-1)):100}}).filter(o=>o.t)}
+function editView(a){
+ const secs=[...new Set(edit.itens.map(i=>i.sec).filter(Boolean))],pt=edit.itens.filter(i=>PONTUA.includes(i.tipo)),tw=pt.reduce((s,i)=>s+(+i.peso||1),0),nc=edit.itens.filter(i=>i.critico).length,existe=S.templates.some(t=>t.id===edit.id);
+ a.innerHTML=`<header><div><div class="eb">Construtor</div><h1>${edit.nome?esc(edit.nome):"Novo modelo"}</h1></div><button id="sair">Cancelar</button></header>
+ ${edit.fonte?`<div class="card ia"><b>Roteiro montado ${edit.fonte==="IA"?"pela IA":edit.fonte==="outra IA"?"com a resposta da outra IA":"pela biblioteca do app"}.</b><span class="meta">Revise as perguntas, ajuste pesos e críticos e salve.${edit.fonte==="biblioteca"?" Nesta versão a IA não está ligada: a biblioteca usou o seu briefing para escolher o segmento e os itens. Para um roteiro sob medida, use a opção Usar outra IA.":""}</span></div>`:""}
+ <div class="card"><label class="eb" for="ed-nome">Nome do checklist</label><input id="ed-nome" value="${esc(edit.nome)}" placeholder="Ex.: Fechamento do turno">
+ <label class="eb" for="ed-br">Contexto para a IA (opcional)</label><textarea id="ed-br" rows="2" placeholder="O que a empresa faz e o que este checklist garante. Usado nas sugestões de ação e no briefing.">${esc(edit.briefing||"")}</textarea>
+ <label class="row meta"><input type="checkbox" id="ed-vis" ${edit.visita?"checked":""} style="width:auto"><span class="sp">Modo visita: pede local e visitante, foto em todos os itens e observações gerais</span></label></div>
+ <div class="card"><div class="row"><span class="eb sp">${edit.itens.length} itens</span><span class="meta">${pt.length} pontuam · peso total ${tw}${nc?` · ${nc} ${nc===1?"crítico":"críticos"}`:""}</span></div>
+ ${edit.itens.map((i,k)=>`<div class="ed2">
+  <div class="row"><input data-k="${k}" class="sp" style="width:auto" value="${esc(i.txt)}" placeholder="Pergunta" aria-label="Pergunta ${k+1}"><button data-x="${k}" aria-label="Remover item">×</button></div>
+  <div class="f2"><select data-s="${k}" aria-label="Tipo">${TIPOS.map(([v,l])=>`<option value="${v}" ${i.tipo===v?"selected":""}>${l}</option>`).join("")}</select><input data-sec="${k}" list="ed-secs" value="${esc(i.sec||"")}" placeholder="Seção (opcional)" aria-label="Seção"></div>
+  ${PONTUA.includes(i.tipo)?`<div class="row meta"><label class="row">Peso <select data-w="${k}" style="width:auto">${PESOS.map(p=>`<option ${(+i.peso||1)===p?"selected":""}>${p}</option>`).join("")}</select></label><label class="row"><input type="checkbox" data-c="${k}" ${i.critico?"checked":""} style="width:auto">Crítico</label><label class="row"><input type="checkbox" data-fn="${k}" ${i.fotoNC?"checked":""} style="width:auto">Foto na falha</label></div>`:""}
+  ${i.tipo==="opc"?`<input data-op="${k}" value="${esc(opStr(i.opcoes))}" placeholder="Bom=100; Regular=50; Ruim=0" aria-label="Opções e pontos">`:""}
+  ${i.tipo==="num"?`<div class="f2"><input type="number" data-mn="${k}" value="${i.min??""}" placeholder="Mínimo aceitável" aria-label="Mínimo aceitável"><input type="number" data-mx="${k}" value="${i.max??""}" placeholder="Máximo aceitável" aria-label="Máximo aceitável"></div>`:""}
+  <details><summary>${i.como?"Como verificar":"Adicionar como verificar"}</summary><textarea data-cm="${k}" rows="2" placeholder="O que olhar, amostra e critério">${esc(i.como||"")}</textarea></details>
+ </div>`).join("")}<datalist id="ed-secs">${secs.map(s=>`<option value="${esc(s)}">`).join("")}</datalist>
+ <button id="add">Adicionar item</button></div>
+ <p class="meta">Peso é quanto o item conta na nota. Crítico zera a nota quando falha. Texto, foto e assinatura não pontuam. Em múltipla escolha, cada opção vale de 0 a 100.</p>
+ <div class="row"><button class="pri sp" id="salvar">Salvar modelo</button>${existe?`<button id="del">Excluir</button>`:""}</div>`;
+ const q=(s,f)=>a.querySelectorAll(s).forEach(f),I=x=>edit.itens[x],er=()=>{const y=scrollY;render();scrollTo(0,y)};
+ $("#sair").onclick=()=>go("tpl");
+ $("#ed-nome").oninput=e=>edit.nome=e.target.value;$("#ed-br").oninput=e=>edit.briefing=e.target.value;$("#ed-vis").onchange=e=>{edit.visita=e.target.checked?1:0};
+ q("[data-k]",x=>x.oninput=()=>I(x.dataset.k).txt=x.value);
+ q("[data-s]",x=>x.onchange=()=>{const i=I(x.dataset.s);i.tipo=x.value;if(i.tipo==="opc"&&!(i.opcoes||[]).length)i.opcoes=[{t:"Bom",p:100},{t:"Regular",p:50},{t:"Ruim",p:0}];if(!PONTUA.includes(i.tipo)){i.critico=false;i.fotoNC=false}er()});
+ q("[data-sec]",x=>x.oninput=()=>I(x.dataset.sec).sec=x.value.trim());
+ q("[data-w]",x=>x.onchange=()=>{I(x.dataset.w).peso=+x.value;er()});
+ q("[data-c]",x=>x.onchange=()=>{I(x.dataset.c).critico=x.checked;er()});
+ q("[data-fn]",x=>x.onchange=()=>{I(x.dataset.fn).fotoNC=x.checked});
+ q("[data-op]",x=>x.onchange=()=>{I(x.dataset.op).opcoes=opParse(x.value);er()});
+ q("[data-mn]",x=>x.oninput=()=>I(x.dataset.mn).min=x.value===""?null:+x.value);
+ q("[data-mx]",x=>x.oninput=()=>I(x.dataset.mx).max=x.value===""?null:+x.value);
+ q("[data-cm]",x=>x.oninput=()=>I(x.dataset.cm).como=x.value);
+ q("[data-x]",x=>x.onclick=()=>{edit.itens.splice(x.dataset.x,1);er()});
+ $("#add").onclick=()=>{const l=edit.itens[edit.itens.length-1];edit.itens.push({id:uid(),txt:"",tipo:"sn",sec:l&&l.sec||"",peso:1});er();const ins=a.querySelectorAll("[data-k]");ins[ins.length-1]?.focus()};
  $("#salvar").onclick=()=>{edit.itens=edit.itens.filter(i=>i.txt.trim());if(!edit.nome.trim()||!edit.itens.length){$("#salvar").textContent="Dê um nome e ao menos 1 item";return}
-  delete edit.ex;const k=S.templates.findIndex(t=>t.id===edit.id);if(k>=0)S.templates[k]=edit;else S.templates.push(edit);save();go("tpl")};
+  delete edit.ex;delete edit.fonte;const k=S.templates.findIndex(t=>t.id===edit.id);if(k>=0)S.templates[k]=edit;else S.templates.push(edit);save();go("tpl")};
  const d=$("#del");if(d)d.onclick=()=>{if(!d.dataset.c){d.dataset.c=1;d.textContent="Confirmar";return}S.templates=S.templates.filter(t=>t.id!==edit.id);save();go("tpl")};
 }
+
 idbOpen().then(render);
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").then(r=>r.update()).catch(()=>{});navigator.serviceWorker?.addEventListener("controllerchange",()=>{if(!window.__rl){window.__rl=1;location.reload()}});
 </script>
