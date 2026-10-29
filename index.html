@@ -353,6 +353,7 @@ function relView(a){
   return `<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${valHtml(i,r)}</div>${falha(i,r)&&r.obs?`<div class="meta">${esc(r.obs)}</div>`:""}${u?`<img class="${i.tipo==="ass"?"assimg":"rf"}" src="${u}" alt="${i.tipo==="ass"?"Assinatura":"Foto: "+esc(i.txt)}">`:""}</div>`}).join("")}</div>`).join("")}
  ${x.obs?`<div class="card"><h2>Observações gerais</h2><p style="margin:0">${esc(x.obs)}</p></div>`:""}`;
  $("#sair").onclick=()=>{rel=null;render();scrollTo(0,0)};
+ if(window.claude?.use)$("#pdf").hidden=true;
  $("#pdf").onclick=()=>imprimir(`Relatório ${x.nome} ${x.local||""} ${dia}`.replace(/\s+/g," ").trim());
  const resumo=`${x.nome}${x.local?" · "+x.local:""} · ${dia}\nNota geral: ${N.nota==null?"-":N.nota+"%"} · ${N.nc} falhas${N.crit.length?" (com falha crítica)":""}`+(x.acoes.length?"\n\nPlano de ação:\n"+x.acoes.map(c=>`- ${c.txt}${c.dono?" ("+c.dono+")":""}${c.prazo?" até "+fd(c.prazo):""}`).join("\n"):"");
  const enviar=async(txt,b)=>{try{if(navigator.share){await navigator.share({title:x.nome,text:txt});return}}catch(e){if(e.name==="AbortError")return}
@@ -395,7 +396,7 @@ function manView(a){
  a.innerHTML=`<header><div><div class="eb">Manual</div><h1>${esc(t.nome)}</h1></div><button id="sair" class="np">Voltar</button></header>${t.visita&&t.id==="tv"?`<div class="card"><p class="meta" style="margin:0">${MAN_INTRO}</p></div>`:""}`+
  grupos(t).map(g=>`<div class="card">${g.sec?`<h2>${esc(g.sec)}</h2>`:""}${g.itens.map(i=>`<div class="item"><div class="row"><b class="sp">${esc(i.txt)}</b>${tags(i)}</div>${i.como?`<div class="meta">${esc(i.como)}</div>`:""}</div>`).join("")}</div>`).join("")+
  `<button class="np" id="pm">Salvar manual em PDF</button>`;
- $("#sair").onclick=()=>{man=null;render();scrollTo(0,0)};$("#pm").onclick=()=>imprimir("Manual "+t.nome);
+ $("#sair").onclick=()=>{man=null;render();scrollTo(0,0)};$("#pm").onclick=()=>imprimir("Manual "+t.nome);if(window.claude?.use)$("#pm").hidden=true;
 }
 
 /* ===== Criar roteiro a partir de briefing ===== */
